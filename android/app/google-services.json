@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "296098370114",
+    "project_id": "prods-fdfa0",
+    "storage_bucket": "prods-fdfa0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:296098370114:android:e62497b97875780de5d3db",
+        "android_client_info": {
+          "package_name": "com.mrz.prods"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWfOv9tCsVf7luwDiH4GoMJeM3uewYFVg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
