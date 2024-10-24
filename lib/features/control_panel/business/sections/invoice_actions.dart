@@ -1,0 +1,237 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+import 'package:prods/features/control_panel/business/sections/carts_actions.dart';
+import 'package:prods/features/control_panel/models/invoice_detail_model.dart';
+
+import '../../models/invoice_model.dart';
+
+class InvoiceActions {
+  final User user = FirebaseAuth.instance.currentUser!;
+  final CollectionReference collectionRef = FirebaseFirestore.instance.collection('users');
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final CartsActions cartsActions;
+
+  InvoiceActions({required this.cartsActions});
+
+  final List<InvoiceModel> _invoices = [];
+  List<InvoiceModel> getInvoice() => _invoices;
+
+  Future<void> getInvoicesFromDatabase() async {
+    _invoices.clear();
+
+    // جلب الفواتير بترتيب تنازلي حسب تاريخ الإنشاء
+    QuerySnapshot snapshot = await (await getInvoicesReference())
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    for (var doc in snapshot.docs) {
+      var myDoc = (doc.data() as Map<String, dynamic>);
+      myDoc['id'] = doc.id;
+      _invoices.add(InvoiceModel.fromDocument(myDoc));
+    }
+  }
+
+
+  Future<void> getInvoicesOnlyTodayFromDatabase() async {
+    _invoices.clear();
+
+    // تحديد بداية اليوم عند الساعة 12 صباحًا
+    DateTime startOfDay = DateTime.now();
+    startOfDay = DateTime(startOfDay.year, startOfDay.month, startOfDay.day, 0, 0, 0);
+
+    // تحديد نهاية اليوم عند الساعة 11:59 مساءً
+    DateTime endOfDay = DateTime.now();
+    endOfDay = DateTime(endOfDay.year, endOfDay.month, endOfDay.day, 23, 59, 59);
+
+    QuerySnapshot snapshot = await (await getInvoicesReference())
+        .where('createdAt', isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay))
+        .where('createdAt', isLessThanOrEqualTo: Timestamp.fromDate(endOfDay))
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    for (var doc in snapshot.docs) {
+      var myDoc = (doc.data() as Map<String, dynamic>);
+      myDoc['id'] = doc.id;
+      _invoices.add(InvoiceModel.fromDocument(myDoc));
+    }
+  }
+
+
+  // getInvoicesOnlyTodayFromDatabase() async {
+  //   _invoices.clear();
+  //   QuerySnapshot snapshot = await (await getInvoicesReference()).where('createdAt', isGreaterThan: DateTime.now().subtract(const Duration(days: 1))).get();
+  //   for(var doc in snapshot.docs) {
+  //     var myDoc = (doc.data() as Map<String, dynamic>);
+  //     myDoc['id'] = doc.id;
+  //     _invoices.add(InvoiceModel.fromDocument(myDoc));
+  //   }
+  // }
+
+
+
+Future<double> getTotalPriceOfInvoice() async {
+  double totalPrice = 0;
+    for (var i = 0; i < getInvoice().length; i++) {
+      totalPrice += getInvoice()[i].totalPrice;
+    }
+    return totalPrice;
+}
+
+
+  Future<void> getInvoicesOnlyAtLastTwoDaysFromDatabase() async {
+    _invoices.clear();
+
+    // تحديد بداية اليوم عند الساعة 12 صباحًا قبل يومين
+    DateTime now = DateTime.now();
+    DateTime startOfDay = DateTime(now.year, now.month, now.day).subtract(const Duration(days: 1));
+    startOfDay = DateTime(startOfDay.year, startOfDay.month, startOfDay.day, 0, 0, 0);
+
+    // تحديد نهاية اليوم عند الساعة 11:59 مساءً اليوم
+    DateTime endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
+
+    QuerySnapshot snapshot = await (await getInvoicesReference())
+        .where('createdAt', isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay))
+        .where('createdAt', isLessThanOrEqualTo: Timestamp.fromDate(endOfDay))
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    for (var doc in snapshot.docs) {
+      var myDoc = (doc.data() as Map<String, dynamic>);
+      myDoc['id'] = doc.id;
+      _invoices.add(InvoiceModel.fromDocument(myDoc));
+    }
+  }
+
+  // getInvoicesOnlyAtLastTwoDaysFromDatabase() async {
+  //   _invoices.clear();
+  //   QuerySnapshot snapshot = await (await getInvoicesReference()).where('createdAt', isGreaterThan: DateTime.now().subtract(const Duration(days: 2))).get();
+  //   for(var doc in snapshot.docs) {
+  //     var myDoc = (doc.data() as Map<String, dynamic>);
+  //     myDoc['id'] = doc.id;
+  //     _invoices.add(InvoiceModel.fromDocument(myDoc));
+  //   }
+  // }
+
+
+
+  Future<void> getInvoicesOnlyAtLastThreeDaysFromDatabase() async {
+    _invoices.clear();
+
+    // تحديد بداية اليوم عند الساعة 12 صباحًا قبل يومين
+    DateTime now = DateTime.now();
+    DateTime startOfDay = DateTime(now.year, now.month, now.day).subtract(const Duration(days: 2));
+    startOfDay = DateTime(startOfDay.year, startOfDay.month, startOfDay.day, 0, 0, 0);
+
+    // تحديد نهاية اليوم عند الساعة 11:59 مساءً اليوم
+    DateTime endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
+
+    QuerySnapshot snapshot = await (await getInvoicesReference())
+        .where('createdAt', isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay))
+        .where('createdAt', isLessThanOrEqualTo: Timestamp.fromDate(endOfDay))
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    for (var doc in snapshot.docs) {
+      var myDoc = (doc.data() as Map<String, dynamic>);
+      myDoc['id'] = doc.id;
+      _invoices.add(InvoiceModel.fromDocument(myDoc));
+    }
+  }
+
+  // getInvoicesOnlyAtLastThreeDaysFromDatabase() async {
+  //   _invoices.clear();
+  //   QuerySnapshot snapshot = await (await getInvoicesReference()).where('createdAt', isGreaterThan: DateTime.now().subtract(const Duration(days: 2))).get();
+  //   for(var doc in snapshot.docs) {
+  //     var myDoc = (doc.data() as Map<String, dynamic>);
+  //     myDoc['id'] = doc.id;
+  //     _invoices.add(InvoiceModel.fromDocument(myDoc));
+  //   }
+  // }
+
+  getInvoicesOnlyAtLastWeekFromDatabase() async {
+    _invoices.clear();
+    QuerySnapshot snapshot = await (await getInvoicesReference()).where('createdAt', isGreaterThan: DateTime.now().subtract(const Duration(days: 7))).get();
+    for(var doc in snapshot.docs) {
+      var myDoc = (doc.data() as Map<String, dynamic>);
+      myDoc['id'] = doc.id;
+      _invoices.add(InvoiceModel.fromDocument(myDoc));
+    }
+  }
+
+  getInvoicesOnlyAtLastMonthFromDatabase() async{
+    _invoices.clear();
+    QuerySnapshot snapshot = await (await getInvoicesReference()).where('createdAt', isGreaterThan: DateTime.now().subtract(const Duration(days: 30))).get();
+    for(var doc in snapshot.docs) {
+      var myDoc = (doc.data() as Map<String, dynamic>);
+      myDoc['id'] = doc.id;
+      _invoices.add(InvoiceModel.fromDocument(myDoc));
+    }
+  }
+
+
+    addNewInvoice(String customerName, double discount) async {
+    List<String> invoiceDetailsIds = [];
+    WriteBatch batch = firestore.batch();
+      for (var item in cartsActions.getCart()) {
+        var docRef = (await getInvoicesDetailsReference()).doc();
+        batch.set(docRef, InvoiceDetailModel(
+            productId: item.productId,
+            quantity: item.quantity,
+            discountType: 0,
+            discount: item.discount,
+            createdAt: Timestamp.now(),
+            productName: item.product.name,
+            priceAfterDiscount: item.product.price - item.discount
+        ).toDocument());
+        invoiceDetailsIds.add(docRef.id);
+      }
+
+      var invoiceRef =  (await getInvoicesReference()).doc();
+      batch.set(invoiceRef, InvoiceModel(
+          id: "",
+          customerName: customerName,
+          discount: discount,
+          totalPrice: cartsActions.getTotalPrice() - discount,
+          invoicesDetailsIds: invoiceDetailsIds,
+          invoiceNumber: 'INV-${DateFormat('yyyyMMdd-HHmmss').format(DateTime.now())}',
+          createdAt: Timestamp.now(),
+      ).toDocument());
+
+      await batch.commit();
+  }
+
+
+
+  getInvoiceDetails(String invoiceId) async {
+    // first get invoiceDetailsIds from invoice by invoice id using getInvoice method..
+     InvoiceModel? invoice = getInvoice().firstWhereOrNull((i) => i.id == invoiceId);
+     if(invoice == null) return null;
+     var invoiceDetailsIds = invoice.invoicesDetailsIds;
+     List<InvoiceDetailModel> invoiceDetails = [];
+     for (var detailId in invoiceDetailsIds) {
+       var detail = await (await getInvoicesDetailsReference()).doc(detailId).get();
+       invoiceDetails.add(InvoiceDetailModel.fromDocument(detail.data() as Map<String, dynamic>));
+     }
+     return invoiceDetails;
+  }
+
+  Future<CollectionReference<Map<String, dynamic>>> getInvoicesReference() async {
+    var data = (await collectionRef.doc(user.uid).get()).data() as Map<String, dynamic>;
+    String storeId = data['storeId'];
+    // print("Two:");
+    return FirebaseFirestore.instance.collection("stores").doc(storeId).collection("invoices");
+  }
+
+  Future<CollectionReference<Map<String, dynamic>>> getInvoicesDetailsReference() async {
+    var data = (await collectionRef.doc(user.uid).get()).data() as Map<String, dynamic>;
+    String storeId = data['storeId'];
+    // print("Two:");
+    return FirebaseFirestore.instance.collection("stores").doc(storeId).collection("invoicesDetails");
+  }
+
+
+
+
+}
