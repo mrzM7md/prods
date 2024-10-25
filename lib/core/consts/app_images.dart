@@ -9,4 +9,5 @@ class AppImages {
   static const addToCart = "assets/images/add_to_cart.png";
   static const logout = "assets/images/logout.png";
   static const support = "assets/images/support.png";
+  static const rejectedCart = "assets/images/rejected_cart.png";
 }

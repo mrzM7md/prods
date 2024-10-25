@@ -304,10 +304,14 @@ class ProductsPage extends StatelessWidget {
                                               elevation: 0,
                                               // color: Colors.white,
                                               onPressed: () {
-                                                cartCubit.addToCart(data[index]);
+                                                if(data[index].remainedQuantity < 1){
+                                                  showCustomToast(context: pageContext, message: "نفدت كمية هذا المنتج", bkgColor: AppColors.appRedColor, textColor: Colors.black);
+                                                } else{
+                                                  cartCubit.addToCart(data[index]);
+                                                }
                                               },
                                               child: Image.asset(
-                                                AppImages.addToCart,
+                                                data[index].remainedQuantity < 1 ? AppImages.rejectedCart : AppImages.addToCart,
                                                 height: 25,
                                               ),
                                             );
@@ -320,20 +324,20 @@ class ProductsPage extends StatelessWidget {
                                               elevation: 0,
                                               color: AppColors.appGreenColor,
                                               onPressed: () {
-                                                pageContext.goNamed(
-                                                  AppRoutes
-                                                      .addEditProductRouter,
-                                                  pathParameters: {
-                                                    "id": data[index].id
-                                                  },
-                                                );
+                                                if(cartCubit.cartActions.idThereProductInCart(data[index].id)) {
+                                                  showCustomToast(context: context, message: "لا يمكنك تعديل منتج مضاف للسلة", bkgColor: AppColors.appRedColor, textColor: Colors.black54);
+                                                }
+                                                else{
+                                                  pageContext.goNamed(
+                                                    AppRoutes
+                                                        .addEditProductRouter,
+                                                    pathParameters: {"id": data[index].id},
+                                                  );
+                                                }
+
                                               },
-                                              child:
-                                                  Image.asset(AppImages.edit),
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
+                                              child: Image.asset(AppImages.edit),),
+                                            const SizedBox(width: 10,),
                                             BlocConsumer<ProductsCubit,
                                                 ControlPanelState>(
                                               buildWhen: (previous, current) =>
@@ -342,14 +346,11 @@ class ProductsPage extends StatelessWidget {
                                                   current.productModel.id ==
                                                       data[index].id,
                                               listenWhen: (previous, current) =>
-                                                  current
-                                                      is DeleteProductState &&
+                                                  current is DeleteProductState &&
                                                   current.productModel.id ==
                                                       data[index].id,
                                               listener: (context, state) {
-                                                if (state
-                                                        is DeleteProductState &&
-                                                    state.isLoaded) {
+                                                if (state is DeleteProductState && state.isLoaded) {
                                                   if (state.isSuccess) {
                                                     showCustomToast(
                                                         context: context,
@@ -370,8 +371,7 @@ class ProductsPage extends StatelessWidget {
                                                 }
                                               },
                                               builder: (context, state) {
-                                                if (state
-                                                        is DeleteProductState &&
+                                                if (state is DeleteProductState &&
                                                     !state.isLoaded) {
                                                   return getAppProgress();
                                                 }

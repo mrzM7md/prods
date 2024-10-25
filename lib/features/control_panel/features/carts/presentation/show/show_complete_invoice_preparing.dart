@@ -5,10 +5,9 @@ import 'package:prods/features/control_panel/business/sections/carts_cubit.dart'
 import '../../../../../../core/consts/app_colors.dart';
 import '../../../../business/sections/invoice_cubit.dart';
 
-OverlayEntry showCompleteInvoicePreparing(BuildContext context, double totalPrice) {
+OverlayEntry showCompleteInvoicePreparing(BuildContext pageContext, double totalPrice) {
   late OverlayEntry overlayEntry;
-  InvoiceCubit invoiceCubit = InvoiceCubit.get(context);
-  CartsCubit cartsCubit = CartsCubit.get(context);
+  InvoiceCubit invoiceCubit = InvoiceCubit.get(pageContext);
   GlobalKey<FormState> key = GlobalKey<FormState>();
   TextEditingController customerNameController = TextEditingController();
   TextEditingController addingDiscountOnTotalController = TextEditingController();
@@ -85,12 +84,12 @@ OverlayEntry showCompleteInvoicePreparing(BuildContext context, double totalPric
                       color: AppColors.appGreenColor,
                       textColor: Colors.white,
                       text: "إنشاء الفاتورة",
-                      onClick: (){
+                      onClick: () async {
                         if(addingDiscountOnTotalController.text.isEmpty){
                           addingDiscountOnTotalController.text = "0.0";
                         }
                         overlayEntry.remove();
-                        invoiceCubit.addNewInvoiceThenRemoveCart(customerName: customerNameController.text, discount: double.parse(addingDiscountOnTotalController.text));
+                        invoiceCubit.addNewInvoiceThenRemoveCart(context: pageContext, customerName: customerNameController.text, discount: double.parse(addingDiscountOnTotalController.text));
                         },
                     ),
                   ],
@@ -104,6 +103,6 @@ OverlayEntry showCompleteInvoicePreparing(BuildContext context, double totalPric
   );
 
   // إدراج الـ OverlayEntry بعد إنشائه
-  Overlay.of(context).insert(overlayEntry);
+  Overlay.of(pageContext).insert(overlayEntry);
   return  overlayEntry;
 }

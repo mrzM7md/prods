@@ -60,6 +60,7 @@ class ProductsCubit extends ControlPanelCubit {
       emit(GetAllProductsState(products: productsActions.getProducts(), isLoaded: true, message: "تم جلب جميع المنجات نجاح", isSuccess: true));
     }
     catch(ex){
+      print("EEEEEEEEEEE:::: $ex");
       emit(const GetAllProductsState(products: null, isLoaded: true, message: "حدث خطأ ما", isSuccess: false));
     }
   }
@@ -70,7 +71,7 @@ class ProductsCubit extends ControlPanelCubit {
     String id = "${sl<Uuid>().v4()}-${DateFormat('yyyyMMddHHmmss').format(DateTime.now())}";
     try{
     ProductModel productModel = ProductModel(id: id, name: newProduct.name, price: newProduct.price, categoryIds: newProduct.categoryIds, remainedQuantity: newProduct.remainedQuantity, boughtQuantity: newProduct.boughtQuantity, createdAt: Timestamp.now(), updatedAt: Timestamp.now());
-      productsActions.addNewProduct(newProduct);
+      productsActions.addNewProduct(productModel);
       emit(AddEditProductState(productModel: productModel, isLoaded: true, isSuccess: true, message: "تم إضافة منتج جديد بنجاح"));
       setNewItemIntoProducts(productModel);
     }catch(ex){

@@ -34,7 +34,7 @@ class ServicesLocator {
     sl.registerLazySingleton(() => CategoriesActions(productsActions: sl<ProductsActions>()));
     sl.registerLazySingleton(() => ProductsActions());
     sl.registerLazySingleton(() => CartsActions());
-    sl.registerLazySingleton(() => InvoiceActions(cartsActions: sl<CartsActions>()));
+    sl.registerLazySingleton(() => InvoiceActions(cartsActions: sl<CartsActions>(), productsActions: sl<ProductsActions>()));
 
     sl.registerLazySingleton(() => CategoriesCubit(categoriesActions: sl<CategoriesActions>()));
     sl.registerLazySingleton(() => ProductsCubit(productsActions: sl<ProductsActions>(), categoriesActions: sl<CategoriesActions>()));

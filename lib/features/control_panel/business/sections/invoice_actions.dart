@@ -1,9 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:prods/features/control_panel/business/sections/carts_actions.dart';
+import 'package:prods/features/control_panel/business/sections/carts_cubit.dart';
+import 'package:prods/features/control_panel/business/sections/products_actions.dart';
 import 'package:prods/features/control_panel/models/invoice_detail_model.dart';
+import 'package:prods/features/control_panel/models/product_model.dart';
 
 import '../../models/invoice_model.dart';
 
@@ -12,8 +16,9 @@ class InvoiceActions {
   final CollectionReference collectionRef = FirebaseFirestore.instance.collection('users');
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final CartsActions cartsActions;
+  final ProductsActions productsActions;
 
-  InvoiceActions({required this.cartsActions});
+  InvoiceActions({required this.cartsActions, required this.productsActions});
 
   final List<InvoiceModel> _invoices = [];
   List<InvoiceModel> getInvoice() => _invoices;
@@ -70,8 +75,7 @@ class InvoiceActions {
   // }
 
 
-
-Future<double> getTotalPriceOfInvoice() async {
+  Future<double> getTotalPriceOfInvoice() async {
   double totalPrice = 0;
     for (var i = 0; i < getInvoice().length; i++) {
       totalPrice += getInvoice()[i].totalPrice;
@@ -106,7 +110,7 @@ Future<double> getTotalPriceOfInvoice() async {
 
   // getInvoicesOnlyAtLastTwoDaysFromDatabase() async {
   //   _invoices.clear();
-  //   QuerySnapshot snapshot = await (await getInvoicesReference()).where('createdAt', isGreaterThan: DateTime.now().subtract(const Duration(days: 2))).get();
+  //   Que rySnapshot snapshot = await (await getInvoicesReference()).where('createdAt', isGreaterThan: DateTime.now().subtract(const Duration(days: 2))).get();
   //   for(var doc in snapshot.docs) {
   //     var myDoc = (doc.data() as Map<String, dynamic>);
   //     myDoc['id'] = doc.id;
@@ -171,12 +175,23 @@ Future<double> getTotalPriceOfInvoice() async {
   }
 
 
-    addNewInvoice(String customerName, double discount) async {
-    List<String> invoiceDetailsIds = [];
-    WriteBatch batch = firestore.batch();
-      for (var item in cartsActions.getCart()) {
-        var docRef = (await getInvoicesDetailsReference()).doc();
-        batch.set(docRef, InvoiceDetailModel(
+
+  final List<String> _invoiceDetailsIds = [];
+  clearInvoiceDetailsIds() => _invoiceDetailsIds.clear();
+
+  late WriteBatch _batch;
+  late int _remainedQuantity, _boughtQuantity;
+  late CollectionReference _invoiceColRef;
+  late CollectionReference _productColRef;
+
+  addNewInvoice(BuildContext context, String customerName, double discount) async {
+    clearInvoiceDetailsIds();
+    _batch = firestore.batch();
+    _invoiceColRef = await getInvoicesDetailsReference();
+    _productColRef = await productsActions.getProductsReference();
+    for (var item in cartsActions.getCart()) {
+        var invoiceRef = _invoiceColRef.doc();
+        _batch.set(invoiceRef, InvoiceDetailModel(
             productId: item.productId,
             quantity: item.quantity,
             discountType: 0,
@@ -185,30 +200,59 @@ Future<double> getTotalPriceOfInvoice() async {
             productName: item.product.name,
             priceAfterDiscount: item.product.price - item.discount
         ).toDocument());
-        invoiceDetailsIds.add(docRef.id);
+
+        var productRef = _productColRef.doc(item.productId);
+        _remainedQuantity = item.product.remainedQuantity - item.quantity;
+        _boughtQuantity = item.product.boughtQuantity + item.quantity;
+
+        _batch.update(productRef, {
+          "remainedQuantity" : _remainedQuantity,
+          "boughtQuantity" : _boughtQuantity,
+        });
+
+        // print remainedQuantity and quantity and boughtQuantity
+        // print("remainedQuantity: ${item.product.remainedQuantity}, boughtQuantity: ${item.product.boughtQuantity}, quantity: ${item.quantity}");  // it prints remainedQuantity and boughtQuantity and quantity of the item that was bought
+        // print("---------------------------------------------");  // it prints a separator line for each item that was bought  // you can remove this line if you don't want a separator line between items
+
+        cartsActions.updateProductInfo(item.productId, ProductModel(id: item.productId, name: item.product.name, price: item.product.price, categoryIds: item.product.categoryIds, remainedQuantity: _remainedQuantity, boughtQuantity: _boughtQuantity, createdAt: item.product.createdAt, updatedAt: item.product.updatedAt));
+        // print("Remined:: $_remainedQuantity");
+
+          // if(_remainedQuantity == 0){
+          //   cartsActions.deleteItemFromCart(item.productId);
+          // }
+
+          if(_remainedQuantity <= item.quantity){
+            cartsActions.updateItemQuantity(item.productId, _remainedQuantity);
+          }
+
+        _invoiceDetailsIds.add(invoiceRef.id);
       }
 
       var invoiceRef =  (await getInvoicesReference()).doc();
-      batch.set(invoiceRef, InvoiceModel(
+      _batch.set(invoiceRef, InvoiceModel(
           id: "",
           customerName: customerName,
           discount: discount,
           totalPrice: cartsActions.getTotalPrice() - discount,
-          invoicesDetailsIds: invoiceDetailsIds,
+          invoicesDetailsIds: _invoiceDetailsIds,
           invoiceNumber: 'INV-${DateFormat('yyyyMMdd-HHmmss').format(DateTime.now())}',
           createdAt: Timestamp.now(),
       ).toDocument());
+    CartsCubit.get(context).getProductsByIds(
+      CartsCubit.get(context).cartActions.getCart().map((c) => c.productId).toList(),
+    );
+      await _batch.commit();
 
-      await batch.commit();
   }
-
 
 
   getInvoiceDetails(String invoiceId) async {
     // first get invoiceDetailsIds from invoice by invoice id using getInvoice method..
      InvoiceModel? invoice = getInvoice().firstWhereOrNull((i) => i.id == invoiceId);
-     if(invoice == null) return null;
-     var invoiceDetailsIds = invoice.invoicesDetailsIds;
+     if(invoice == null) {
+      return null;
+    }
+    var invoiceDetailsIds = invoice.invoicesDetailsIds;
      List<InvoiceDetailModel> invoiceDetails = [];
      for (var detailId in invoiceDetailsIds) {
        var detail = await (await getInvoicesDetailsReference()).doc(detailId).get();

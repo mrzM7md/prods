@@ -44,7 +44,7 @@ Future<File?> generateInvoiceFromInvoiceModels({required List<InvoiceDetailModel
               pw.ListView.separated(
                 itemBuilder: (context, index) => pw.Row(
                   children: [
-                    pw.Text(ivd[index].productName, style: pw.TextStyle(font: ttf, fontSize: 8)),
+                    pw.Text(ivd[index].productName ?? "", style: pw.TextStyle(font: ttf, fontSize: 8)),
                     Spacer(),
                     pw.Text("${ivd[index].priceAfterDiscount *ivd[index].quantity}" , style: pw.TextStyle(font: ttf, fontSize: 8)),
                     Spacer(),

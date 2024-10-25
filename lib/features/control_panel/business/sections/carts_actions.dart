@@ -3,8 +3,16 @@ import 'package:prods/features/control_panel/models/product_model.dart';
 
 class CartsActions {
   final List<CartModel> _cart = [];
-
-  List<CartModel> getCart() => _cart;
+  final List<String> _cartProductsIdsHasOneQuantity = [];
+  List<CartModel> getCart() {
+    _cartProductsIdsHasOneQuantity.addAll(
+      _cart.where((c) => c.quantity < 1).map((cart) => cart.productId).toList()
+    );
+    for (var id in _cartProductsIdsHasOneQuantity) {
+      _cart.removeWhere((c) => c.productId == id);
+    }
+    return _cart;
+  }
 
   bool addToCart(ProductModel product) {
     if (! idThereProductInCart(product.id)) {
@@ -128,6 +136,22 @@ class CartsActions {
     }
   }
 
+  updateItemQuantity(String productId, int quantity) async {
+    int cartIndex = _cart.indexWhere(
+            (p) => p.productId == productId);
+    if(cartIndex != -1){
+      _cart[cartIndex].quantity = quantity;
+    }
+  }
+
+  updateProductInfo(String productId, ProductModel product) async {
+    int cartIndex = _cart.indexWhere(
+            (p) => p.productId == productId);
+    if(cartIndex != -1){
+      _cart[cartIndex].product = product;
+    }
+  }
+
   removeCart() {
    _cart.clear();
   }
@@ -137,5 +161,4 @@ class CartsActions {
     }
     return false;
   }
-
 }

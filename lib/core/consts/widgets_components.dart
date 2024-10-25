@@ -16,76 +16,89 @@ TextFormField getAppTextField({
   TextInputType? inputType,
   bool readOnly = false,
   required Widget? suffixIconButton,
-}) => TextFormField(
-  textAlign: TextAlign.start,
-  onChanged: (value) => onChange(value),
-  controller: controller,
-  textDirection: direction,
-  style: getGlobalTextStyle(),
-  obscureText: obscureText,
-  keyboardType: inputType,
-  validator: validator,
-  readOnly: readOnly,
-  // mouseCursor: MouseCursor.defer,
-  onFieldSubmitted: onSubmitted,
-  decoration: InputDecoration(
-    // hintText: "",
-    labelText: text,
-    hintTextDirection: direction,
-    suffixIcon: suffixIconButton,
-    contentPadding: const EdgeInsetsDirectional.symmetric(
-      vertical: 10,
-      horizontal: 20,
-    ),
-    filled: true,
-    fillColor: fillColor,
-    border: const OutlineInputBorder(
-      borderRadius: BorderRadius.all(
-          Radius.circular(19)
+}) =>
+    TextFormField(
+      textAlign: TextAlign.start,
+      onChanged: (value) => onChange(value),
+      controller: controller,
+      textDirection: direction,
+      style: getGlobalTextStyle(),
+      obscureText: obscureText,
+      keyboardType: inputType,
+      validator: validator,
+      readOnly: readOnly,
+      // mouseCursor: MouseCursor.defer,
+      onFieldSubmitted: onSubmitted,
+      decoration: InputDecoration(
+        // hintText: "",
+        labelText: text,
+        hintTextDirection: direction,
+        suffixIcon: suffixIconButton,
+        contentPadding: const EdgeInsetsDirectional.symmetric(
+          vertical: 10,
+          horizontal: 20,
+        ),
+        filled: true,
+        fillColor: fillColor,
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(19)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: fillColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: fillColor),
+        ),
       ),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: fillColor),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: fillColor),
-    ),
-  ),
-);
+    );
 
+Widget getAppButton(
+        {required Color color,
+        required Color textColor,
+        required String text,
+        required onClick,
+        IconData? icon}) =>
+    Row(
+      children: [
+        MaterialButton(
+          onPressed: onClick,
+          elevation: 0,
+          color: color,
+          height: 46,
+          padding: const EdgeInsetsDirectional.symmetric(horizontal: 30),
+          child: ConditionalBuilder(
+            condition: icon == null,
+            builder: (context) => Text(
+              text,
+              style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+            ),
+            fallback: (context) {
+              return Row(
+                children: [
+                  Icon(
+                    icon,
+                    color: textColor,
+                  ),
+                  Text(
+                    text,
+                    style: TextStyle(
+                        color: textColor, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
 
-Widget getAppButton({required Color color, required Color textColor,
-  required String text,
-  required onClick
-, IconData? icon}) => Row(
-  children: [
-    MaterialButton(
-      onPressed: onClick,
-      elevation: 0,
-      color: color,
-      height: 46,
-      padding: const EdgeInsetsDirectional.symmetric(horizontal: 30),
-      child: ConditionalBuilder(condition: icon == null, builder: (context) => Text(text, style: TextStyle(color: textColor, fontWeight: FontWeight.bold),), fallback: (context) {
-        return Row(
-          children: [
-            Icon(icon, color: textColor,),
-            Text(text, style: TextStyle(color: textColor, fontWeight: FontWeight.bold),),
-          ],
-        );
-      },) ,
-    ),
-  ],
-);
-
-
-late OverlayEntry overlayEntry;
 void showCustomToast({
   required BuildContext context,
   required String message,
   required Color bkgColor,
   required Color textColor,
 }) {
-  overlayEntry = OverlayEntry(
+  OverlayEntry overlayEntry = OverlayEntry(
     builder: (context) => Positioned(
       top: 50.0,
       left: MediaQuery.of(context).size.width * 0.1,
@@ -95,21 +108,15 @@ void showCustomToast({
         child: Directionality(
           textDirection: TextDirection.rtl,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
             decoration: BoxDecoration(
               color: bkgColor,
               borderRadius: BorderRadius.circular(8.0),
             ),
-            child: Row(
-              children: [
-                IconButton(onPressed: (){
-                  overlayEntry.remove();
-                }, icon: const Icon(Icons.close)),
-                Text(
-                  message,
-                  style: TextStyle(color: textColor),
-                ),
-              ],
+            child: Text(
+              message,
+              style: TextStyle(color: textColor),
             ),
           ),
         ),
@@ -123,8 +130,8 @@ void showCustomToast({
   });
 }
 
-
-void showDeleteConfirmationMessage(BuildContext context, Color bkgColor, String title, String description, Function onClick) {
+void showDeleteConfirmationMessage(BuildContext context, Color bkgColor,
+    String title, String description, Function onClick) {
   late OverlayEntry overlayEntry;
   overlayEntry = OverlayEntry(
     builder: (context) => Stack(
@@ -142,7 +149,8 @@ void showDeleteConfirmationMessage(BuildContext context, Color bkgColor, String 
             child: Directionality(
               textDirection: TextDirection.rtl,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0, vertical: 12.0),
                 decoration: BoxDecoration(
                   color: bkgColor,
                   borderRadius: BorderRadius.circular(8.0),
@@ -164,23 +172,31 @@ void showDeleteConfirmationMessage(BuildContext context, Color bkgColor, String 
                       },
                       icon: const Icon(Icons.close),
                     ),
-                    const SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: MediaQuery.sizeOf(context).width <= 400 ? 14 : 18,
+                        fontSize:
+                            MediaQuery.sizeOf(context).width <= 400 ? 14 : 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Text(
                       description,
                       style: TextStyle(
-                        fontSize: MediaQuery.sizeOf(context).width <= 400 ? 12 : 16,
+                        fontSize:
+                            MediaQuery.sizeOf(context).width <= 400 ? 12 : 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     getAppButton(
                       color: AppColors.appRedColor,
                       textColor: Colors.white,
@@ -204,7 +220,16 @@ void showDeleteConfirmationMessage(BuildContext context, Color bkgColor, String 
   Overlay.of(context).insert(overlayEntry);
 }
 
-OverlayEntry showAddOnFieldMessage(Function(dynamic value) onChange ,Function(dynamic value) validator ,GlobalKey<FormState> key, BuildContext context, Color bkgColor, String title, String description, Function onClick, TextEditingController controller) {
+OverlayEntry showAddOnFieldMessage(
+    Function(dynamic value) onChange,
+    Function(dynamic value) validator,
+    GlobalKey<FormState> key,
+    BuildContext context,
+    Color bkgColor,
+    String title,
+    String description,
+    Function onClick,
+    TextEditingController controller) {
   late OverlayEntry overlayEntry;
   overlayEntry = OverlayEntry(
     builder: (context) => Stack(
@@ -222,7 +247,8 @@ OverlayEntry showAddOnFieldMessage(Function(dynamic value) onChange ,Function(dy
             child: Directionality(
               textDirection: TextDirection.rtl,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0, vertical: 12.0),
                 decoration: BoxDecoration(
                   color: bkgColor,
                   borderRadius: BorderRadius.circular(8.0),
@@ -244,27 +270,43 @@ OverlayEntry showAddOnFieldMessage(Function(dynamic value) onChange ,Function(dy
                       },
                       icon: const Icon(Icons.close),
                     ),
-                    const SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: MediaQuery.sizeOf(context).width <= 400 ? 14 : 18,
+                        fontSize:
+                            MediaQuery.sizeOf(context).width <= 400 ? 14 : 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Text(
                       description,
                       style: TextStyle(
-                        fontSize: MediaQuery.sizeOf(context).width <= 400 ? 12 : 16,
+                        fontSize:
+                            MediaQuery.sizeOf(context).width <= 400 ? 12 : 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Form(
                         key: key,
-                        child: getAppTextField(text: "أدخل قيمة", onChange: onChange, validator: validator, controller: controller, fillColor: AppColors.appGrey, obscureText: false, direction: TextDirection.ltr, suffixIconButton: null,)
+                        child: getAppTextField(
+                          text: "أدخل قيمة",
+                          onChange: onChange,
+                          validator: validator,
+                          controller: controller,
+                          fillColor: AppColors.appGrey,
+                          obscureText: false,
+                          direction: TextDirection.ltr,
+                          suffixIconButton: null,
+                        )),
+                    const SizedBox(
+                      height: 20,
                     ),
-                    const SizedBox(height: 20,),
                     getAppButton(
                       color: AppColors.appGreenColor,
                       textColor: Colors.white,
@@ -283,21 +325,20 @@ OverlayEntry showAddOnFieldMessage(Function(dynamic value) onChange ,Function(dy
 
   // إدراج الـ OverlayEntry بعد إنشائه
   Overlay.of(context).insert(overlayEntry);
-  return  overlayEntry;
+  return overlayEntry;
 }
 
-
-Widget getAppProgress() =>
-    Container(
-        alignment: Alignment.center,
-        height: 40,
-        width: 40 ,
-        child: const CircularProgressIndicator(color: Colors.blueAccent,));
+Widget getAppProgress() => Container(
+    alignment: Alignment.center,
+    height: 40,
+    width: 40,
+    child: const CircularProgressIndicator(
+      color: Colors.blueAccent,
+    ));
 
 DataColumn getAppDataColumn(String text) => DataColumn(
     headingRowAlignment: MainAxisAlignment.center,
-    label: Text(text, style: const TextStyle(
-        fontWeight: FontWeight.bold)));
+    label: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)));
 
 DataCell getAppDataCell(String text) => DataCell(Align(
     alignment: Alignment.center,

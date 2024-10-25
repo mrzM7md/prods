@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:prods/features/control_panel/business/sections/invoice_actions.dart';
 import 'package:prods/features/control_panel/models/invoice_detail_model.dart';
@@ -10,10 +11,10 @@ class InvoiceCubit extends ControlPanelCubit {
   static InvoiceCubit get(context) => BlocProvider.of(context);
 
 
-  addNewInvoiceThenRemoveCart({required String customerName, required double discount}) async {
+  addNewInvoiceThenRemoveCart({required BuildContext context, required String customerName, required double discount}) async {
     try {
       emit(const AddInvoiceState(isSuccess: false, message: "", isLoaded: false));
-      invoiceActions.addNewInvoice(customerName, discount);
+      invoiceActions.addNewInvoice(context, customerName, discount);
       emit(const AddInvoiceState(isSuccess: true, message: "تم إنشاء فاتورة جديدة بنجاح", isLoaded: true));
     } catch (e) {
       emit(const AddInvoiceState(isSuccess: false, message: "خدمة الفاتورة غير متاحة", isLoaded: true));

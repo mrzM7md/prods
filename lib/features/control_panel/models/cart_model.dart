@@ -4,6 +4,6 @@ class CartModel{
   final String productId;
   int quantity;
   double discount;
-  final ProductModel product;
+  ProductModel product;
   CartModel(this.productId, this.quantity, this.discount, this.product);
 }

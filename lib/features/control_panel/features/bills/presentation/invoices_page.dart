@@ -4,7 +4,6 @@ import 'package:prods/core/consts/helpers_methods.dart';
 import 'package:prods/core/consts/widgets_components.dart';
 import 'package:prods/core/enums/enums.dart';
 import 'package:prods/features/control_panel/business/sections/invoice_cubit.dart';
-import 'package:prods/features/control_panel/features/bills/presentation/widgets/filter_invoices_by_date_to_data.dart';
 import 'package:prods/features/control_panel/features/products/presentation/widgets/filter_option_button_Item_widget.dart';
 import 'package:prods/features/control_panel/models/invoice_model.dart';
 import '../../../../../core/consts/app_colors.dart';
@@ -15,7 +14,6 @@ class InvoicesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext pageContext) {
-    TextEditingController controller = TextEditingController();
     final ScrollController scrollInfoHorizontalController = ScrollController();
 
     final InvoiceCubit invoiceCubit = InvoiceCubit.get(pageContext)..getInvoiceToday();
