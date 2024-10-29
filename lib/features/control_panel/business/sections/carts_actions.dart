@@ -5,10 +5,12 @@ class CartsActions {
   final List<CartModel> _cart = [];
   final List<String> _cartProductsIdsHasOneQuantity = [];
   List<CartModel> getCart() {
+
     _cartProductsIdsHasOneQuantity.clear();
     _cartProductsIdsHasOneQuantity.addAll(
       _cart.where((c) => c.quantity < 1).map((cart) => cart.productId).toList()
     );
+
     for (var id in _cartProductsIdsHasOneQuantity) {
       _cart.removeWhere((c) => c.productId == id);
     }
