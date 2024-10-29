@@ -15,7 +15,7 @@ class CategoriesActions {
 
   Future<List<CategoryModel>> getAllCategories() async {
     // print("One:");
-    QuerySnapshot snapshot = await (await getCategoriesReference()).get();
+    QuerySnapshot snapshot = await (await getCategoriesReference()).orderBy('createdAt', descending: true).get();
     // print("Three:");
     List<CategoryModel> categories = [];
     for (var doc in snapshot.docs) {
@@ -28,12 +28,12 @@ class CategoriesActions {
   }
 
   Future<CategoryModel> addNewCategory(String name, String id) async {
-    CollectionReference snapshot = await getCategoriesReference();
+    // CollectionReference snapshot = await getCategoriesReference();
     CategoryModel categoryModel = CategoryModel(id: id, name: name, createdAt: Timestamp.now(), updatedAt: Timestamp.now());
 
-    var x = await snapshot.doc(id).set(
-        categoryModel.toDocument()
-   );
+   //  var x = await snapshot.doc(id).set(
+   //      categoryModel.toDocument()
+   // );
 
     var c = categoryModel.toDocument();
     return CategoryModel.fromDocument(c);
@@ -62,13 +62,12 @@ class CategoriesActions {
 
   Future<List<String>> getCategoriesNamesFromIdsAsync(List<dynamic> catIds) async{
     List<String> catNames = [];
-    print("I am here");
     for(var id in catIds){
       var name = await ( (await (await getCategoriesReference()).doc(id).get()).data() as Map)["name"];
       catNames.add(name);
-      print(name);
+      // print(name);
     }
-    print("I am here 2");
+    // print("I am here 2");
     return catNames;
   }
 

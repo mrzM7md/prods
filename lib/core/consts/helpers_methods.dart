@@ -9,6 +9,13 @@ import 'package:prods/features/control_panel/models/invoice_detail_model.dart';
 import 'package:prods/features/control_panel/models/invoice_model.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../values/names.dart';
+
+String formatNumber(number) {
+  final formatter = NumberFormat('#,###');
+  return formatter.format(number);
+}
+
 getFormatedDate(DateTime date) => DateFormat('h:mma  d/M/yyyy').format(date);
 
 Future<File?> generateInvoiceFromInvoiceModels({required List<InvoiceDetailModel> ivd, required InvoiceModel invoice}) async {
@@ -27,8 +34,9 @@ Future<File?> generateInvoiceFromInvoiceModels({required List<InvoiceDetailModel
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: <pw.Widget>[
-              pw.Text("متجر عصصيدة الروزي", style: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 8)),
-              pw.Text(getFormatedDate(invoice.createdAt.toDate()), style: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 8)),
+              pw.Text(invoice.invoiceNumber, style: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 8)),
+              pw.Text(Names.storeName, style: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 8)),
+              pw.Text(getFormatedDate(invoice.createdAt.toDate()), style: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 6)),
               pw.SizedBox(height: 8),
               pw.Divider(),
               if (invoice.customerName.isNotEmpty)
@@ -43,14 +51,14 @@ Future<File?> generateInvoiceFromInvoiceModels({required List<InvoiceDetailModel
 
               pw.ListView.separated(
                 itemBuilder: (context, index) => pw.Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    pw.Text(ivd[index].productName ?? "", style: pw.TextStyle(font: ttf, fontSize: 8)),
-                    Spacer(),
-                    pw.Text("${ivd[index].priceAfterDiscount *ivd[index].quantity}" , style: pw.TextStyle(font: ttf, fontSize: 8)),
-                    Spacer(),
-                    pw.Text(ivd[index].quantity.toString(), style: pw.TextStyle(font: ttf, fontSize: 8)),
-                    pw.Spacer(),
-                    pw.Text("${ivd[index].priceAfterDiscount}", style: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 8)),
+                    pw.SizedBox(width: 46,
+                    child: pw.Text(ivd[index].productName, style: pw.TextStyle(font: ttf, fontSize: 8)),
+                    ),
+                    pw.Text(formatNumber(ivd[index].priceAfterDiscount), style: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 8)),
+                    pw.Text(formatNumber(ivd[index].quantity), style: pw.TextStyle(font: ttf, fontSize: 8)),
+                    pw.Text(formatNumber(ivd[index].priceAfterDiscount * ivd[index].quantity) , style: pw.TextStyle(font: ttf, fontSize: 8)),
                   ],
                 ),
                 separatorBuilder: (context, index) => pw.Divider(),
@@ -58,20 +66,22 @@ Future<File?> generateInvoiceFromInvoiceModels({required List<InvoiceDetailModel
               ),
               pw.SizedBox(height: 8),
               pw.Text("المجموع ", style: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 8)),
-              pw.Text("${invoice.totalPrice}", style: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 8)),
-              pw.Stack(
-                children: [
-                  pw.Text("خصم ${invoice.discount}", style: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 8)),
-                  pw.Positioned(
-                    top: 7, // ضبط الموضع العمودي للخط
-                    child: pw.Container(
-                      width: 80, // ضبط عرض الخط
-                      height: 1, // ضبط سماكة الخط
-                      color: PdfColors.black,
+              pw.Text(formatNumber(invoice.totalPrice), style: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 8)),
+              invoice.discount > 0 ?
+                pw.Stack(
+                  children: [
+                    pw.Text("خصم ${formatNumber(invoice.discount)}", style: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 8)),
+                    pw.Positioned(
+                      top: 7, // ضبط الموضع العمودي للخط
+                      child: pw.Container(
+                        width: 80, // ضبط عرض الخط
+                        height: 1, // ضبط سماكة الخط
+                        color: PdfColors.black,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                )
+              : Container(),
             ],
           ),
         );
@@ -89,7 +99,7 @@ Future<File?> generateInvoiceFromInvoiceModels({required List<InvoiceDetailModel
 
     return file;
   } catch (e) {
-    print("Error generating PDF: $e");
+    // print("Error generating PDF: $e");
     return null;
   }
 

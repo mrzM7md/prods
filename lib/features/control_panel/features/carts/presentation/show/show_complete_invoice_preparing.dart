@@ -1,6 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' as format_date;
+import 'package:prods/core/consts/helpers_methods.dart';
 import 'package:prods/core/consts/widgets_components.dart';
 import 'package:prods/features/control_panel/business/sections/carts_cubit.dart';
+import 'package:prods/features/control_panel/models/invoice_detail_model.dart';
+import 'package:prods/features/control_panel/models/invoice_model.dart';
 
 import '../../../../../../core/consts/app_colors.dart';
 import '../../../../business/sections/invoice_cubit.dart';
@@ -8,6 +13,7 @@ import '../../../../business/sections/invoice_cubit.dart';
 OverlayEntry showCompleteInvoicePreparing(BuildContext pageContext, double totalPrice) {
   late OverlayEntry overlayEntry;
   InvoiceCubit invoiceCubit = InvoiceCubit.get(pageContext);
+  CartsCubit cartsCubit = CartsCubit.get(pageContext);
   GlobalKey<FormState> key = GlobalKey<FormState>();
   TextEditingController customerNameController = TextEditingController();
   TextEditingController addingDiscountOnTotalController = TextEditingController();
@@ -75,7 +81,13 @@ OverlayEntry showCompleteInvoicePreparing(BuildContext pageContext, double total
                                   TextPosition(offset: addingDiscountOnTotalController.text.length),
                                 );
                               }
-                            }, validator: (value){}, controller: addingDiscountOnTotalController, fillColor: AppColors.appGrey, obscureText: false, direction: TextDirection.rtl, suffixIconButton: null,),
+                            }, validator: (value){
+                                if(double.parse(value.toString()) > totalPrice){
+                                  return "لا مبكن أن يكون الخصم أكبر من المبلغ نفسه!";
+                                }
+                                return null;
+                            }, controller: addingDiscountOnTotalController, fillColor: AppColors.appGrey, obscureText: false, direction: TextDirection.ltr
+                              , suffixIconButton: null,),
                           ],
                         ),
                     ),
@@ -86,10 +98,33 @@ OverlayEntry showCompleteInvoicePreparing(BuildContext pageContext, double total
                       text: "إنشاء الفاتورة",
                       onClick: () async {
                         if(addingDiscountOnTotalController.text.isEmpty){
-                          addingDiscountOnTotalController.text = "0.0";
+                        addingDiscountOnTotalController.text = "0.0";
+                      }
+                      if(key.currentState!.validate()){
+                          overlayEntry.remove();
+                          invoiceCubit.addNewInvoiceThenRemoveCart(context: pageContext, customerName: customerNameController.text, discount: double.parse(addingDiscountOnTotalController.text));
+                          generateInvoiceFromInvoiceModels(ivd:
+                          cartsCubit.cartActions.getCart().map(
+                                  (c) => InvoiceDetailModel(
+                                productId: c.productId,
+                                quantity: c.quantity,
+                                discountType: 0,
+                                discount: c.discount,
+                                createdAt: Timestamp.now(),
+                                productName: c.product.name,
+                                priceAfterDiscount: c.product.price - c.discount,
+                              )
+                          ).toList()
+                              , invoice: InvoiceModel(
+                                id: "",
+                                customerName: customerNameController.text,
+                                discount: double.parse(addingDiscountOnTotalController.text),
+                                totalPrice: totalPrice - double.parse(addingDiscountOnTotalController.text),
+                                invoicesDetailsIds: const [],
+                                invoiceNumber: format_date.DateFormat('yyyyMMdd-HHmmss').format(DateTime.now()),
+                                createdAt: Timestamp.now(),
+                              ));
                         }
-                        overlayEntry.remove();
-                        invoiceCubit.addNewInvoiceThenRemoveCart(context: pageContext, customerName: customerNameController.text, discount: double.parse(addingDiscountOnTotalController.text));
                         },
                     ),
                   ],

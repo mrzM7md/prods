@@ -39,6 +39,7 @@ class FilterCategoriesOptionsWidget extends StatelessWidget {
               controller: scrollCategoryController,
               thumbVisibility: true,
               child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
                 controller: scrollCategoryController,
                 scrollDirection: Axis.horizontal,
                 child: Row(

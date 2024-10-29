@@ -18,8 +18,8 @@ class AddEditProductPage extends StatelessWidget {
 
   final String? productId;
   @override
-  Widget build(BuildContext context) {
-    final ProductsCubit cubit = BlocProvider.of<ProductsCubit>(context);
+  Widget build(BuildContext mainContext) {
+    final ProductsCubit cubit = BlocProvider.of<ProductsCubit>(mainContext);
     final TextEditingController nameController = TextEditingController();
     final TextEditingController priceController = TextEditingController();
     final TextEditingController remainedQuantityController = TextEditingController();
@@ -34,7 +34,8 @@ class AddEditProductPage extends StatelessWidget {
     }else{
       cubit.productsActions.clearItemFromSelectedCategoriesForProductAddingFilter();
     }
-    
+    CategoriesCubit.get(mainContext).getAllCategories();
+
     return Scaffold(
        body: SafeArea(
            child: Directionality(
@@ -172,7 +173,7 @@ class AddEditProductPage extends StatelessWidget {
                                          }
                                          return null;
                                        },
-                                   controller: priceController, fillColor: Colors.black12, obscureText: false, direction: TextDirection.rtl, suffixIconButton: null),
+                                   controller: priceController, fillColor: Colors.black12, obscureText: false, direction: TextDirection.ltr, suffixIconButton: null),
 
                                const SizedBox(height: 10,),
                                getAppTextField(
@@ -189,7 +190,7 @@ class AddEditProductPage extends StatelessWidget {
                                        return "الكمية المتبقية يجب أن يكون رقم صحيح";
                                      }
                                      return null;
-                               }, controller: remainedQuantityController, fillColor: Colors.black12, obscureText: false, direction: TextDirection.rtl, suffixIconButton: null),
+                               }, controller: remainedQuantityController, fillColor: Colors.black12, obscureText: false, direction: TextDirection.ltr, suffixIconButton: null),
                                const SizedBox(height: 10,),
                                getAppTextField(
                                    inputType: TextInputType.number,
@@ -205,7 +206,7 @@ class AddEditProductPage extends StatelessWidget {
                                    return "الكمية التي تم بيعها يجب أن يكون رقم صحيح";
                                  }
                                  return null;
-                               }, controller: boughtQuantityController, fillColor: Colors.black12, obscureText: false, direction: TextDirection.rtl, suffixIconButton: null),
+                               }, controller: boughtQuantityController, fillColor: Colors.black12, obscureText: false, direction: TextDirection.ltr, suffixIconButton: null),
                                const SizedBox(height: 10,),
                                                               ],
                                                             ),

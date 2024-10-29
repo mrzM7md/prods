@@ -300,6 +300,7 @@ OverlayEntry showAddOnFieldMessage(
                           validator: validator,
                           controller: controller,
                           fillColor: AppColors.appGrey,
+                          onSubmitted:(value) => onClick(),
                           obscureText: false,
                           direction: TextDirection.ltr,
                           suffixIconButton: null,

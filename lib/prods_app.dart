@@ -10,7 +10,7 @@ class ProdsApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: RoutesManager.router,
       debugShowMaterialGrid: false,
-      title: 'برنامج مصمم خصخيا لإجراء عمليات المتجر الأساسية',
+      title: 'نظام البسيط',
       theme: ThemeData(
         fontFamily: "Amiri",
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.appGreenColor),

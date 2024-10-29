@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:prods/core/consts/app_colors.dart';
 import 'package:prods/features/control_panel/business/control_panel_cubit.dart';
+import 'package:prods/features/control_panel/business/sections/app_actions.dart';
 import 'package:prods/features/control_panel/business/sections/carts_actions.dart';
 import 'package:prods/features/control_panel/business/sections/carts_cubit.dart';
 import 'package:prods/features/control_panel/business/sections/categories_actions.dart';
@@ -24,22 +25,28 @@ final sl = GetIt.instance;
 class ServicesLocator {
   void init() {
 
+    /// ####################### Start Control Panel - Injection #######################  ///
+    sl.registerLazySingleton(() => AppActions());
+    /// ####################### End Control Panel - Injection #######################  ///
+
     /// ####################### Start Auth - Injection #######################  ///
     sl.registerLazySingleton(() => LoginActions());
     sl.registerLazySingleton(() => LoginCubit(
       loginActions: sl<LoginActions>(),
     ));
     /// ####################### End Auth - Injection #######################  ///
-    sl.registerLazySingleton(() => ControlPanelCubit());
+    sl.registerLazySingleton(() => ControlPanelCubit(
+      appActions: sl<AppActions>(),
+    ));
     sl.registerLazySingleton(() => CategoriesActions(productsActions: sl<ProductsActions>()));
     sl.registerLazySingleton(() => ProductsActions());
     sl.registerLazySingleton(() => CartsActions());
     sl.registerLazySingleton(() => InvoiceActions(cartsActions: sl<CartsActions>(), productsActions: sl<ProductsActions>()));
 
-    sl.registerLazySingleton(() => CategoriesCubit(categoriesActions: sl<CategoriesActions>()));
-    sl.registerLazySingleton(() => ProductsCubit(productsActions: sl<ProductsActions>(), categoriesActions: sl<CategoriesActions>()));
-    sl.registerLazySingleton(() => CartsCubit(cartActions: sl<CartsActions>(), productsActions: sl<ProductsActions>()));
-    sl.registerLazySingleton(() => InvoiceCubit(invoiceActions: sl<InvoiceActions>()));
+    sl.registerLazySingleton(() => CategoriesCubit(categoriesActions: sl<CategoriesActions>(), appActions: sl<AppActions>()));
+    sl.registerLazySingleton(() => ProductsCubit(productsActions: sl<ProductsActions>(), categoriesActions: sl<CategoriesActions>(), appActions: sl<AppActions>()));
+    sl.registerLazySingleton(() => CartsCubit(cartActions: sl<CartsActions>(), productsActions: sl<ProductsActions>(), appActions: sl<AppActions>()));
+    sl.registerLazySingleton(() => InvoiceCubit(invoiceActions: sl<InvoiceActions>(), appActions: sl<AppActions>()));
 
     sl.registerLazySingleton(() => const CategoriesPage());
     sl.registerLazySingleton(() => const ProductsPage());

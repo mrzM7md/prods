@@ -1,6 +1,8 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:prods/core/consts/helpers_methods.dart';
+import 'package:prods/core/consts/sscreens_size.dart';
 import 'package:prods/core/consts/widgets_components.dart';
 import 'package:prods/core/enums/enums.dart';
 import 'package:prods/features/control_panel/business/sections/invoice_cubit.dart';
@@ -16,32 +18,41 @@ class InvoicesPage extends StatelessWidget {
   Widget build(BuildContext pageContext) {
     final ScrollController scrollInfoHorizontalController = ScrollController();
 
-    final InvoiceCubit invoiceCubit = InvoiceCubit.get(pageContext)..getInvoiceToday();
+    final InvoiceCubit invoiceCubit = InvoiceCubit.get(pageContext)
+      ..getInvoiceToday();
     return SizedBox(
         width: double.infinity,
         child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.start,
+            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // const FilterInvoicesByDateToData(),
               // AddEditProductWidget(context: pageContext, controller: controller, formKey: formKey, message: "", bkgColor: Colors.white, textColor: Colors.black),
               const SizedBox(
                 height: 25,
               ),
+              ConditionalBuilder(condition: MediaQuery.sizeOf(pageContext).width <= ScreensSizes.smallScreen,
+                builder: (context) => const Column(
+                  children: [
+                    Text("الفواتير", style: TextStyle(fontWeight: FontWeight.bold),),
+                    SizedBox(height: 5,),
+                  ],
+                ), fallback: (context) => Container(),),
               SizedBox(
                 child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
                       BlocBuilder<InvoiceCubit, ControlPanelState>(
-                        buildWhen: (previous, current) => current is ChangeInvoiceTypeSelectedState,
+                        buildWhen: (previous, current) =>
+                            current is ChangeInvoiceTypeSelectedState,
                         builder: (context, state) {
                           var bgColor = Colors.black54;
-                          if (state is ! ChangeInvoiceTypeSelectedState) {
+                          if (state is! ChangeInvoiceTypeSelectedState) {
                             bgColor = AppColors.appGreenColor;
                           }
                           if (state is ChangeInvoiceTypeSelectedState &&
-                              state.type ==
-                                  InvoiceFilterType.TODAY) {
+                              state.type == InvoiceFilterType.TODAY) {
                             bgColor = AppColors.appGreenColor;
                           }
                           return FilterOptionButtonItemWidget(
@@ -51,17 +62,18 @@ class InvoicesPage extends StatelessWidget {
                               onClick: () {
                                 invoiceCubit.getInvoiceToday();
                               });
-                          },),
+                        },
+                      ),
                       const SizedBox(
                         width: 5,
                       ),
                       BlocBuilder<InvoiceCubit, ControlPanelState>(
-                        buildWhen: (previous, current) => current is ChangeInvoiceTypeSelectedState,
+                        buildWhen: (previous, current) =>
+                            current is ChangeInvoiceTypeSelectedState,
                         builder: (context, state) {
                           var bgColor = Colors.black54;
                           if (state is ChangeInvoiceTypeSelectedState &&
-                              state.type ==
-                                  InvoiceFilterType.LAST_2_DAYS) {
+                              state.type == InvoiceFilterType.LAST_2_DAYS) {
                             bgColor = AppColors.appGreenColor;
                           }
                           return FilterOptionButtonItemWidget(
@@ -77,12 +89,12 @@ class InvoicesPage extends StatelessWidget {
                         width: 5,
                       ),
                       BlocBuilder<InvoiceCubit, ControlPanelState>(
-                        buildWhen: (previous, current) => current is ChangeInvoiceTypeSelectedState,
+                        buildWhen: (previous, current) =>
+                            current is ChangeInvoiceTypeSelectedState,
                         builder: (context, state) {
                           var bgColor = Colors.black54;
                           if (state is ChangeInvoiceTypeSelectedState &&
-                              state.type ==
-                                  InvoiceFilterType.LAST_3_DAYS) {
+                              state.type == InvoiceFilterType.LAST_3_DAYS) {
                             bgColor = AppColors.appGreenColor;
                           }
                           return FilterOptionButtonItemWidget(
@@ -98,12 +110,12 @@ class InvoicesPage extends StatelessWidget {
                         width: 5,
                       ),
                       BlocBuilder<InvoiceCubit, ControlPanelState>(
-                        buildWhen: (previous, current) => current is ChangeInvoiceTypeSelectedState,
+                        buildWhen: (previous, current) =>
+                            current is ChangeInvoiceTypeSelectedState,
                         builder: (context, state) {
                           var bgColor = Colors.black54;
                           if (state is ChangeInvoiceTypeSelectedState &&
-                              state.type ==
-                                  InvoiceFilterType.ALLDAYS) {
+                              state.type == InvoiceFilterType.ALLDAYS) {
                             bgColor = AppColors.appGreenColor;
                           }
                           return FilterOptionButtonItemWidget(
@@ -126,8 +138,7 @@ class InvoicesPage extends StatelessWidget {
 
               Expanded(
                 child: BlocBuilder<InvoiceCubit, ControlPanelState>(
-                  buildWhen: (previous, current) =>
-                  current is GetInvoiceState,
+                  buildWhen: (previous, current) => current is GetInvoiceState,
                   builder: (context, state) {
                     if (state is GetInvoiceState) {
                       if (!state.isLoaded) {
@@ -144,7 +155,8 @@ class InvoicesPage extends StatelessWidget {
                             });
                       }
 
-                      List<InvoiceModel>? data = invoiceCubit.invoiceActions.getInvoice();
+                      List<InvoiceModel>? data =
+                          invoiceCubit.invoiceActions.getInvoice();
                       if (data.isEmpty) {
                         return const Text("فارغ");
                       }
@@ -164,9 +176,10 @@ class InvoicesPage extends StatelessWidget {
                                 dividerThickness: 0,
                                 columnSpacing: 100,
                                 dataRowColor:
-                                WidgetStateProperty.all(Colors.white),
+                                    WidgetStateProperty.all(Colors.white),
                                 columns: <DataColumn>[
                                   getAppDataColumn('خيارات'),
+                                  getAppDataColumn('رمز الفاتورة'),
                                   getAppDataColumn('اسم العميل'),
                                   getAppDataColumn('الخصم على المجموع'),
                                   getAppDataColumn('المحموع'),
@@ -174,40 +187,60 @@ class InvoicesPage extends StatelessWidget {
                                 ],
                                 rows: List<DataRow>.generate(
                                   data.length,
-                                      (index) => DataRow(
+                                  (index) => DataRow(
                                     color: index % 2 == 1
                                         ? const WidgetStatePropertyAll(
-                                        AppColors.appGrey)
+                                            AppColors.appGrey)
                                         : const WidgetStatePropertyAll(
-                                        Colors.white),
+                                            Colors.white),
                                     // color: WidgetStatePropertyAll(Colors.red),
                                     cells: <DataCell>[
-                                      DataCell(BlocConsumer<InvoiceCubit, ControlPanelState>(
-                                      listenWhen: (previous, current) => current is GetInvoiceDetailsState && current.invoiceId == data[index].id,
-                                      buildWhen: (previous, current) => current is GetInvoiceDetailsState && current.invoiceId == data[index].id,
+                                      DataCell(BlocConsumer<InvoiceCubit,
+                                          ControlPanelState>(
+                                        listenWhen: (previous, current) =>
+                                            current is GetInvoiceDetailsState &&
+                                            current.invoiceId == data[index].id,
+                                        buildWhen: (previous, current) =>
+                                            current is GetInvoiceDetailsState &&
+                                            current.invoiceId == data[index].id,
                                         listener: (context, state) {
-                                        if(state is GetInvoiceDetailsState && state.isLoaded) {
-                                          if(state.isSuccess) {
-                                            generateInvoiceFromInvoiceModels(ivd: state.invoiceDetails, invoice: data[index]);
+                                          if (state is GetInvoiceDetailsState &&
+                                              state.isLoaded) {
+                                            if (state.isSuccess) {
+                                              generateInvoiceFromInvoiceModels(
+                                                  ivd: state.invoiceDetails,
+                                                  invoice: data[index]);
+                                            } else {
+                                              showCustomToast(
+                                                  context: pageContext,
+                                                  message: state.message,
+                                                  bkgColor:
+                                                      AppColors.appRedColor,
+                                                  textColor: Colors.black);
+                                            }
                                           }
-                                          else{
-                                            showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black);
+                                        },
+                                        builder: (context, state) {
+                                          if (state is GetInvoiceDetailsState &&
+                                              !state.isLoaded) {
+                                            return getAppProgress();
                                           }
-                                        }
-                                      },
-                                      builder: (context, state) {
-                                        if(state is GetInvoiceDetailsState && ! state.isLoaded) {
-                                          return getAppProgress();
-                                        }
-                                        return IconButton(onPressed: (){
-                                          invoiceCubit.getInvoiceDetails(data[index].id);
-                                      }, icon: const Icon(Icons.print));
+                                          return IconButton(
+                                              onPressed: () {
+                                                invoiceCubit.getInvoiceDetails(
+                                                    data[index].id);
+                                              },
+                                              icon: const Icon(Icons.print));
                                         },
                                       )),
+                                      getAppDataCell(data[index].invoiceNumber),
                                       getAppDataCell(data[index].customerName),
-                                      getAppDataCell("${data[index].discount }"),
-                                      getAppDataCell("${data[index].totalPrice }"),
-                                      getAppDataCell(getFormatedDate(data[index].createdAt.toDate())),
+                                      getAppDataCell(
+                                          formatNumber(data[index].discount)),
+                                      getAppDataCell(
+                                          formatNumber(data[index].totalPrice)),
+                                      getAppDataCell(getFormatedDate(
+                                          data[index].createdAt.toDate())),
                                     ],
                                   ),
                                 ),
@@ -220,11 +253,12 @@ class InvoicesPage extends StatelessWidget {
                 ),
               ),
               BlocBuilder<InvoiceCubit, ControlPanelState>(
-                buildWhen: (previous, current) => current is ChangeInvoiceTypeSelectedState,
+                buildWhen: (previous, current) =>
+                    current is ChangeInvoiceTypeSelectedState,
                 builder: (context, state) {
                   StringBuffer word = StringBuffer();
-                  if(state is ChangeInvoiceTypeSelectedState){
-                    switch (state.type){
+                  if (state is ChangeInvoiceTypeSelectedState) {
+                    switch (state.type) {
                       case InvoiceFilterType.TODAY:
                         word.clear();
                         word.write("المحموع لليوم");
@@ -235,20 +269,27 @@ class InvoicesPage extends StatelessWidget {
                         break;
                       case InvoiceFilterType.LAST_2_DAYS:
                         word.clear();
-                        word.write("المحموع لآخر يومين -");
+                        word.write("المحموع لآخر يومين ");
                         break;
                       default:
                         word.clear();
-                        word.write("المحموع لآخر ثلاثة أيام -");
+                        word.write("المحموع لآخر ثلاثة أيام ");
                         break;
                     }
-                    return Text(
-                        "$word ${state.totalPrice}"
-                    );
+                    return Align(
+                        alignment: AlignmentDirectional.topStart,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(
+                            "$word ${formatNumber(state.totalPrice)}",
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ));
                   }
                   return getAppProgress();
-                        },
-                      )
+                },
+              )
             ]));
   }
 }

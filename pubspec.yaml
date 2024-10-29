@@ -91,6 +91,11 @@ dependencies:
   uuid: ^4.5.1
   whatsapp_unilink: ^2.1.0
   url_launcher: ^6.3.1
+  flutter_native_splash: ^2.4.2
+  flutter_statusbarcolor_ns: ^0.6.0
+  flutter_launcher_icons: ^0.14.1
+  permission_handler: ^11.3.1
+
 
 dev_dependencies:
   flutter_test:
@@ -102,6 +107,12 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/apps_logo.png"
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -35,12 +35,12 @@ class LoginPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Image.asset(
-                          AppImages.logo,
+                          AppImages.appLogo,
                           height: 102,
                           width: 102,
                         ),
                         Text(
-                          "متجر ثقة",
+                          "نظام البسيط",
                           style: getGlobalTextStyle().copyWith(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,

@@ -1,8 +1,9 @@
-import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:prods/block_observer.dart';
+import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:prods/core/network/local/cache_helper.dart';
 import 'package:prods/core/services/services_locator.dart';
 import 'package:prods/firebase_cloud_services.dart';
@@ -18,12 +19,20 @@ void main() async{
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await setupCheckAppService();
-  Bloc.observer = MyBlocObserver();
+  // Bloc.observer = MyBlocObserver();
 
   ServicesLocator().init();
   // configureApp();
 
+  FlutterStatusbarcolor.setStatusBarColor(Colors.white);
+  FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
+
+
   await CacheHelper.init();
+
+  if(Platform.isAndroid || Platform.isIOS){
+    await Permission.photos.request();
+  }
 
   runApp(const MyApp());
 }

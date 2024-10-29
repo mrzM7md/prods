@@ -8,8 +8,9 @@ import 'package:prods/core/consts/app_images.dart';
 import 'package:prods/core/consts/app_routes.dart';
 import 'package:prods/core/consts/sscreens_size.dart';
 import 'package:prods/core/enums/enums.dart';
+import 'package:prods/core/network/local/cache_helper.dart';
+import 'package:prods/core/values/names.dart';
 import 'package:prods/features/control_panel/business/control_panel_cubit.dart';
-import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // For Flutter applications, you'll most likely want to use
@@ -41,14 +42,31 @@ class ControlPanelSectionsWidget extends StatelessWidget {
                 }, icon: const Icon(Icons.close)),
               ), fallback: (context) => Container(),) ,
           Image.asset(
-            AppImages.logo,
+            AppImages.appLogo,
             height: 90,
             width: 90,
           ),
-          const Text(
-            "متجر ثقة",
-            style: TextStyle(
-                fontSize: 32, fontWeight: FontWeight.bold),
+          const SizedBox(height: 10,),
+          FutureBuilder(
+            future: cubit.appActions.getStoreName(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator());
+              } else if (snapshot.hasData) {
+                Names.storeName = "${snapshot.data}";
+                CacheHelper.setData(key: CacheHelper.storeNameKey, value: "${snapshot.data}");
+                return Text(
+                  "${snapshot.data}",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                );
+              }
+              return const Text("---");
+            },
           ),
           const SizedBox(
             height: 20,
@@ -203,7 +221,7 @@ class ControlPanelSectionsWidget extends StatelessWidget {
 
   void openWhatsApp() async {
     String phoneNumber = "9670774520862"; // استبدل برقم الهاتف
-    String message = "أحتاج إلى مساعدة!"; // استبدل بالنص الذي تريد إرساله
+    String message = "أحتاج إلى مساعدة 'البسيط'"; // استبدل بالنص الذي تريد إرساله
     String url = "whatsapp://send?phone=$phoneNumber&text=$message";
 
     if (await canLaunch(url)) {

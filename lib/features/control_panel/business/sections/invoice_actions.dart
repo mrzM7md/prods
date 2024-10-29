@@ -235,7 +235,7 @@ class InvoiceActions {
           discount: discount,
           totalPrice: cartsActions.getTotalPrice() - discount,
           invoicesDetailsIds: _invoiceDetailsIds,
-          invoiceNumber: 'INV-${DateFormat('yyyyMMdd-HHmmss').format(DateTime.now())}',
+          invoiceNumber: DateFormat('yyyyMMdd-HHmmss').format(DateTime.now()),
           createdAt: Timestamp.now(),
       ).toDocument());
     CartsCubit.get(context).getProductsByIds(

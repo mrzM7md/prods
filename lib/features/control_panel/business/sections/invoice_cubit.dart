@@ -7,7 +7,7 @@ import '../control_panel_cubit.dart';
 
 class InvoiceCubit extends ControlPanelCubit {
   final InvoiceActions invoiceActions;
-  InvoiceCubit({required this.invoiceActions});
+  InvoiceCubit({required this.invoiceActions, required super.appActions});
   static InvoiceCubit get(context) => BlocProvider.of(context);
 
 

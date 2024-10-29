@@ -23,8 +23,7 @@ class ControlPanelPage extends StatelessWidget {
     ControlPanelCubit cubit = ControlPanelCubit.get(context);
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: SafeArea(
-          child: Scaffold(
+      child: SafeArea(child: Scaffold(
         body: Stack(
           children: [
             Row(

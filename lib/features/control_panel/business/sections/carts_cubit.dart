@@ -8,7 +8,7 @@ class CartsCubit extends ControlPanelCubit {
   final CartsActions cartActions;
   final ProductsActions productsActions;
 
-  CartsCubit({required this.cartActions, required this.productsActions});
+  CartsCubit({required this.cartActions, required this.productsActions, required super.appActions});
 
   static CartsCubit get(context) => BlocProvider.of(context);
 

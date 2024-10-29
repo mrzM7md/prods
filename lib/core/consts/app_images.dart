@@ -10,4 +10,5 @@ class AppImages {
   static const logout = "assets/images/logout.png";
   static const support = "assets/images/support.png";
   static const rejectedCart = "assets/images/rejected_cart.png";
+  static const appLogo = "assets/images/app_logo.png";
 }

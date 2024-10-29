@@ -1,3 +1,4 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:prods/core/consts/app_colors.dart';
@@ -34,15 +35,28 @@ class CategoriesPage extends StatelessWidget {
                 return Container();
               }
                 return Padding(padding: const EdgeInsets.all(20.0),
-              child: Align(
-                alignment: AlignmentDirectional.topStart,
-                child: getAppButton(icon: Icons.add,
-                    color: Colors.white,
-                    textColor: Colors.black,
-                    text: MediaQuery.sizeOf(context).width > ScreensSizes.smallScreen ? "إضافة صنف جديد" : "",
-                    onClick: () {
-                      cubit.changeClickedOnAddNewOrEditCategory();
-                    }),
+              child: Column(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ConditionalBuilder(condition: MediaQuery.sizeOf(context).width <= ScreensSizes.smallScreen,
+                        builder: (context) => const Column(
+                          children: [
+                            Text("الأصناف", style: TextStyle(fontWeight: FontWeight.bold),),
+                            SizedBox(height: 5,),
+                          ],
+                        ), fallback: (context) => Container(),),
+                      getAppButton(icon: Icons.add,
+                          color: Colors.white,
+                          textColor: Colors.black,
+                          text: MediaQuery.sizeOf(context).width > ScreensSizes.smallScreen ? "إضافة صنف جديد" : "",
+                          onClick: () {
+                            cubit.changeClickedOnAddNewOrEditCategory();
+                          }),
+                    ],
+                  ),
+                ],
               ),
             );
     },
@@ -154,8 +168,7 @@ class CategoriesPage extends StatelessWidget {
                                                       height: 20,
                                                       child: CircularProgressIndicator());;
                                                   } else if (snapshot.hasData) {
-                                                  // إذا كان هناك مستخدم مسجل الدخول
-                                                  return Text(snapshot.data.toString());
+                                                  return Text(formatNumber(snapshot.data));
                                                   }
                                                   return const Text("حدث خطأ ما");
                                                   },                                              )

@@ -1,3 +1,4 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:prods/core/consts/app_routes.dart';
@@ -39,55 +40,76 @@ class ProductsPage extends StatelessWidget {
               ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Row(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Align(
-                      alignment: AlignmentDirectional.topStart,
-                      child: getAppButton(
-                          icon: Icons.add,
-                          color: Colors.white,
-                          textColor: Colors.black,
-                          text: MediaQuery.sizeOf(pageContext).width >
-                                  ScreensSizes.smallScreen
-                              ? "إضافة منتج جديد"
-                              : "",
-                          onClick: () {
-                            pageContext.goNamed(
-                              AppRoutes.addEditProductRouter,
-                              pathParameters: {"id": "-1"},
-                            );
-                          }),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    getAppButton(
-                        color: Colors.white,
-                        textColor: Colors.black,
-                        text: MediaQuery.sizeOf(pageContext).width >
-                                ScreensSizes.smallScreen
-                            ? "خيارات التصفية"
-                            : "",
-                        icon: Icons.filter_alt_rounded,
-                        onClick: () {
-                          productCubit.changeFilterOptions();
-                        }),
-                    SizedBox(
-                      width: 200,
-                      child: getAppTextField(
-                          text: "ابحث عن منتج",
-                          onChange: (value) {},
-                          validator: (value) {},
-                          controller: controller,
-                          fillColor: AppColors.appGrey,
-                          obscureText: false,
-                          direction: TextDirection.rtl,
-                          suffixIconButton: const Icon(Icons.search_outlined),
-                          onSubmitted: (value) {
-                            productCubit.changeSortProductTypeSelected(
-                                productCubit.productsActions.getProductTypeFilter(),
-                                value);
-                          }),
+                    ConditionalBuilder(condition: MediaQuery.sizeOf(pageContext).width <= ScreensSizes.smallScreen,
+                      builder: (context) => const Column(
+                        children: [
+                          Padding(padding: EdgeInsetsDirectional.all(5),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "المنتجات",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ), fallback: (context) => Container(),),
+                    Row(
+                      children: [
+                        getAppButton(
+                            icon: Icons.add,
+                            color: Colors.white,
+                            textColor: Colors.black,
+                            text: MediaQuery.sizeOf(pageContext).width >
+                                    ScreensSizes.smallScreen
+                                ? "إضافة منتج جديد"
+                                : "",
+                            onClick: () {
+                              pageContext.goNamed(
+                                AppRoutes.addEditProductRouter,
+                                pathParameters: {"id": "-1"},
+                              );
+                            }),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        getAppButton(
+                            color: Colors.white,
+                            textColor: Colors.black,
+                            text: MediaQuery.sizeOf(pageContext).width >
+                                    ScreensSizes.smallScreen
+                                ? "خيارات التصفية"
+                                : "",
+                            icon: Icons.filter_alt_rounded,
+                            onClick: () {
+                              productCubit.changeFilterOptions();
+                            }),
+                        SizedBox(
+                          width: 200,
+                          child: getAppTextField(
+                              text: "ابحث عن منتج",
+                              onChange: (value) {},
+                              validator: (value) {},
+                              controller: controller,
+                              fillColor: AppColors.appGrey,
+                              obscureText: false,
+                              direction: TextDirection.rtl,
+                              suffixIconButton: const Icon(Icons.search_outlined),
+                              onSubmitted: (value) {
+                                productCubit.changeSortProductTypeSelected(
+                                    productCubit.productsActions.getProductTypeFilter(),
+                                    value);
+                              }),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -115,6 +137,7 @@ class ProductsPage extends StatelessWidget {
                       ),
                       SizedBox(
                         child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: [
@@ -404,7 +427,7 @@ class ProductsPage extends StatelessWidget {
                                         ),
                                       ),
                                       getAppDataCell(data[index].name),
-                                      getAppDataCell("${data[index].price}"),
+                                      getAppDataCell(formatNumber(data[index].price)),
                                       DataCell(
                                         Align(
                                             alignment: Alignment.center,
@@ -421,7 +444,7 @@ class ProductsPage extends StatelessWidget {
                                                       child:
                                                           CircularProgressIndicator());
                                                 } else if (snapshot.hasData) {
-                                                  return Text(snapshot!.data!
+                                                  return Text(snapshot.data!
                                                       .toString());
                                                 }
                                                 return const Text("حدث خطأ ما");
@@ -429,9 +452,9 @@ class ProductsPage extends StatelessWidget {
                                             )),
                                       ),
                                       getAppDataCell(
-                                          "${data[index].remainedQuantity}"),
+                                          formatNumber(data[index].remainedQuantity)),
                                       getAppDataCell(
-                                          "${data[index].boughtQuantity}"),
+                                          formatNumber(data[index].boughtQuantity)),
                                       getAppDataCell(getFormatedDate(
                                           data[index].createdAt.toDate())),
                                       getAppDataCell(

@@ -11,7 +11,7 @@ import '../../../../core/services/services_locator.dart';
 
 class CategoriesCubit extends ControlPanelCubit {
   final CategoriesActions categoriesActions;
-  CategoriesCubit({required this.categoriesActions});
+  CategoriesCubit({required this.categoriesActions, required super.appActions});
 
   static CategoriesCubit get(context) => BlocProvider.of(context);
 

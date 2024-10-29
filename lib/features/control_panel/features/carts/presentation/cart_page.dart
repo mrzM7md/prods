@@ -1,3 +1,4 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:prods/features/control_panel/business/sections/invoice_cubit.dar
 import 'package:prods/features/control_panel/features/carts/presentation/show/show_complete_invoice_preparing.dart';
 import 'package:prods/features/control_panel/features/categories/presentation/widgets/add_edit_category_widget.dart';
 import 'package:prods/features/control_panel/models/product_model.dart';
+import '../../../../../core/consts/helpers_methods.dart';
 import '../../../../../core/consts/widgets_components.dart';
 
 class CartPage extends StatelessWidget {
@@ -42,8 +44,18 @@ class CartPage extends StatelessWidget {
         return SizedBox(
             width: double.infinity,
             child: Column(
-              // crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ConditionalBuilder(condition: MediaQuery.sizeOf(pageContext).width <= ScreensSizes.smallScreen,
+                      builder: (context) => const Column(
+                        children: [
+                          Text("السلة", style: TextStyle(fontWeight: FontWeight.bold),),
+                          SizedBox(height: 5,),
+                        ],
+                      ), fallback: (context) => Container(),),
+                  ),
                   AddEditCategoryWidget(context: pageContext, controller: controller, formKey: formKey, message: "", bkgColor: Colors.white, textColor: Colors.black),
                   BlocBuilder<CategoriesCubit, ControlPanelState>(
                     buildWhen: (previous, current) => current is ChangeAddNewOrEditCategoryBoxState, builder: (context, state) {
@@ -231,7 +243,7 @@ class CartPage extends StatelessWidget {
                                           ),
                                           DataCell(
                                               Text(
-                                                data[index].price.toString(),
+                                                formatNumber(data[index].price),
                                                 style: const TextStyle(fontWeight: FontWeight.bold),
                                               ),
                                             ),
@@ -242,7 +254,7 @@ class CartPage extends StatelessWidget {
                                               return Align(
                                                   alignment: Alignment.center,
                                                   child: Text(
-                                                    "${cartsCubit.cartActions.getDiscount(data[index].id)}",
+                                                    formatNumber(cartsCubit.cartActions.getDiscount(data[index].id)),
                                                     style: const TextStyle(fontWeight: FontWeight.bold),
                                                   ));
                                             },
@@ -254,7 +266,7 @@ class CartPage extends StatelessWidget {
                                                   return Align(
                                                       alignment: Alignment.center,
                                                       child: Text(
-                                                        "${cartsCubit.cartActions.getPriceAfterDiscount(data[index].id)}",
+                                                        formatNumber(cartsCubit.cartActions.getPriceAfterDiscount(data[index].id)),
                                                         style: const TextStyle(fontWeight: FontWeight.bold),
                                                       ));
                                                 },
@@ -266,7 +278,7 @@ class CartPage extends StatelessWidget {
                                             return Align(
                                             alignment: Alignment.center,
                                             child: Text(
-                                            "${cartsCubit.cartActions.getPriceAfterDiscountAndQuantity(data[index].id)}",
+                                            formatNumber(cartsCubit.cartActions.getPriceAfterDiscountAndQuantity(data[index].id)),
                                             style: const TextStyle(fontWeight: FontWeight.bold),
                                                   ));
                                             },
@@ -291,7 +303,7 @@ class CartPage extends StatelessWidget {
                             return Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  "${cartsCubit.cartActions.getTotalPrice()}",
+                                  formatNumber(cartsCubit.cartActions.getTotalPrice()),
                                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                 ));
                           },

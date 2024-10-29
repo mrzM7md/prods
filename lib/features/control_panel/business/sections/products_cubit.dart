@@ -13,7 +13,7 @@ import 'package:uuid/uuid.dart';
 class ProductsCubit extends ControlPanelCubit {
   final ProductsActions productsActions;
   final CategoriesActions categoriesActions;
-  ProductsCubit({required this.productsActions, required this.categoriesActions});
+  ProductsCubit({required this.productsActions, required this.categoriesActions, required super.appActions});
 
   static ProductsCubit get(context) => BlocProvider.of(context);
 

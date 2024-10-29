@@ -9,6 +9,7 @@ class CacheHelper {
   }
 
   static String connectStateKey = "connect_state_key";
+  static String storeNameKey = "store_name_key";
 
   static bool? getBool({
     required String key,
