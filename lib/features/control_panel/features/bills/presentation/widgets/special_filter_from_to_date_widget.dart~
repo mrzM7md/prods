@@ -1,0 +1,156 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:prods/core/consts/widgets_components.dart';
+import 'package:prods/features/control_panel/business/sections/invoice_cubit.dart';
+
+import '../../../../../../core/consts/app_colors.dart';
+import '../../../../../../core/enums/enums.dart';
+import '../../../../business/control_panel_cubit.dart';
+import '../../../products/presentation/widgets/filter_option_button_Item_widget.dart';
+
+
+class SpecialFilterFromToDateWidget extends StatelessWidget {
+  const SpecialFilterFromToDateWidget({super.key, required this.overlayEntry, required this.supContext});
+  final OverlayEntry overlayEntry;
+  final BuildContext supContext;
+
+  @override
+  Widget build(context) {
+    InvoiceCubit invoiceCubit = InvoiceCubit.get(supContext);
+    TextEditingController customerNameController = TextEditingController();
+    TextEditingController addingDiscountOnTotalController = TextEditingController();
+
+    return Positioned(
+      top: 200.0,
+      left: MediaQuery.of(supContext).size.width * 0.2,
+      width: MediaQuery.of(supContext).size.width / 2,
+      child: Material(
+        color: Colors.transparent,
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(5, 5),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    overlayEntry.remove();
+                  },
+                  icon: const Icon(Icons.close),
+                ),
+                const SizedBox(height: 10,),
+                Text(
+                  "جلب الفواتير من تاريخ الى تاريخ",
+                  style: TextStyle(
+                    fontSize: MediaQuery.sizeOf(supContext).width <= 400 ? 14 : 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10,),
+
+                Row(
+                  children: [
+                    BlocBuilder<InvoiceCubit, ControlPanelState>(
+                      buildWhen: (previous, current) => current is ChangeInvoiceTypeSelectedState,
+                      builder: (supContext, state) {
+                        var bgColor = Colors.black54;
+                        if (state is ! ChangeInvoiceTypeSelectedState) {
+                          bgColor = AppColors.appGreenColor;
+                        }
+                        if (state is ChangeInvoiceTypeSelectedState &&
+                            state.type ==
+                                InvoiceFilterType.TODAY) {
+                          bgColor = AppColors.appGreenColor;
+                        }
+                        return FilterOptionButtonItemWidget(
+                            bgColor: bgColor,
+                            color: Colors.white,
+                            text: "لهذا اليوم",
+                            onClick: () {
+                              invoiceCubit.getInvoiceToday();
+                            });
+                      },),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    // kmdslkmlkdm
+                    BlocBuilder<InvoiceCubit, ControlPanelState>(
+                      buildWhen: (previous, current) => current is ChangeInvoiceTypeSelectedState,
+                      builder: (supContext, state) {
+                        var bgColor = Colors.black54;
+                        if (state is ChangeInvoiceTypeSelectedState &&
+                            state.type ==
+                                InvoiceFilterType.SPECIAL) {
+                          bgColor = AppColors.appGreenColor;
+                        }
+                        return FilterOptionButtonItemWidget(
+                            bgColor: bgColor,
+                            color: Colors.white,
+                            text: "مخصص",
+                            onClick: () {
+
+                            });
+
+
+                      },
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    BlocBuilder<InvoiceCubit, ControlPanelState>(
+                      buildWhen: (previous, current) => current is ChangeInvoiceTypeSelectedState,
+                      builder: (supContext, state) {
+                        var bgColor = Colors.black54;
+                        if (state is ChangeInvoiceTypeSelectedState &&
+                            state.type ==
+                                InvoiceFilterType.ALLDAYS) {
+                          bgColor = AppColors.appGreenColor;
+                        }
+                        return FilterOptionButtonItemWidget(
+                          bgColor: bgColor,
+                          color: Colors.white,
+                          text: "جميع الأيام",
+                          onClick: () {
+                            invoiceCubit.getInvoice();
+                          },
+                        );
+                      },
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                  ],
+                ),                      const SizedBox(height: 20,),
+                getAppButton(
+                  color: AppColors.appGreenColor,
+                  textColor: Colors.white,
+                  text: "موافق",
+                  onClick: (){
+                    if(addingDiscountOnTotalController.text.isEmpty){
+                      addingDiscountOnTotalController.text = "0.0";
+                    }
+                    overlayEntry.remove();
+                    invoiceCubit.addNewInvoice(customerName: customerNameController.text, discount: double.parse(addingDiscountOnTotalController.text));
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

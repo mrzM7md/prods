@@ -1,0 +1,87 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' hide DatePickerTheme;
+
+
+class TestPage extends StatefulWidget {
+  @override
+  _TestPageState createState() => _TestPageState();
+}
+
+class _TestPageState extends State<TestPage> {
+  DateTime? startDate;
+  DateTime? endDate;
+  List<Product> products = [
+    Product(name: 'Product 1', addedDate: DateTime(2023, 1, 1)),
+    Product(name: 'Product 2', addedDate: DateTime(2023, 2, 15)),
+    Product(name: 'Product 3', addedDate: DateTime(2023, 3, 20)),
+  ];
+
+  void _selectStartDate(BuildContext context) {
+    dt_picker.DatePicker.showDatePicker(context,
+        showTitleActions: true,
+        minTime: DateTime(2000, 1, 1),
+        maxTime: DateTime(2101, 12, 31), onConfirm: (date) {
+          setState(() {
+            startDate = date;
+          });
+        }, currentTime: DateTime.now(), locale: LocaleType.en);
+  }
+
+  void _selectEndDate(BuildContext context) {
+    dt_picker.DatePicker.showDatePicker(context,
+        showTitleActions: true,
+        minTime: DateTime(2000, 1, 1),
+        maxTime: DateTime(2101, 12, 31), onConfirm: (date) {
+          setState(() {
+            endDate = date;
+          });
+        }, currentTime: DateTime.now(), locale: dt_picker.LocaleType.en);
+  }
+
+  List<Product> filterProductsByDate(List<Product> products) {
+    if (startDate == null || endDate == null) return products;
+
+    return products.where((product) {
+      return product.addedDate.isAfter(startDate!) &&
+          product.addedDate.isBefore(endDate!);
+    }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Filter Products by Date'),
+      ),
+      body: Column(
+        children: [
+          ElevatedButton(
+            onPressed: () => _selectStartDate(context),
+            child: Text('Select Start Date'),
+          ),
+          ElevatedButton(
+            onPressed: () => _selectEndDate(context),
+            child: Text('Select End Date'),
+          ),
+          Expanded(
+            child: ListView(
+              children: filterProductsByDate(products).map((product) {
+                return ListTile(
+                  title: Text(product.name),
+                  subtitle: Text(product.addedDate.toString()),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Product {
+  final String name;
+  final DateTime addedDate;
+
+  Product({required this.name, required this.addedDate});
+}

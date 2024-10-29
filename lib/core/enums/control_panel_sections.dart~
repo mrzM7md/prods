@@ -1,0 +1,13 @@
+enum ControlPanelSections {
+    BILLS,
+    CATEGORIES,
+    PRODUCTS,
+    STATISTICS
+}
+
+enum SortProductType {
+    FROM_NEWEST_TO_OLDERS,
+    FROM_OLDEST_TO_NEWEST,
+    FROM_MUST_SELLING_TO_LEAST,
+    FROM_LEAS_SELLING_TO_MUST,
+}
