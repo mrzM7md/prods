@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class InvoiceDetailModel {
   final String productId, productName;
-  final double quantity;
+  final int quantity;
   final int discountType;
   final double priceAfterDiscount, discount;
   final Timestamp createdAt;

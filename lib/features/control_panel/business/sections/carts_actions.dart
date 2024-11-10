@@ -1,3 +1,4 @@
+import 'package:prods/core/enums/enums.dart';
 import 'package:prods/features/control_panel/models/cart_model.dart';
 import 'package:prods/features/control_panel/models/product_model.dart';
 
@@ -8,7 +9,7 @@ class CartsActions {
 
     _cartProductsIdsHasOneQuantity.clear();
     _cartProductsIdsHasOneQuantity.addAll(
-      _cart.where((c) => c.quantity < 1).map((cart) => cart.productId).toList()
+      _cart.where((c) => c.quantity == 0).map((cart) => cart.productId).toList()
     );
 
     for (var id in _cartProductsIdsHasOneQuantity) {
@@ -34,7 +35,7 @@ class CartsActions {
     return 0;
   }
 
-  getQuantity(String productId) {
+  double getQuantity(String productId) {
     int cartIndex = _cart.indexWhere(
             (p) => p.productId == productId);
 
@@ -105,6 +106,19 @@ class CartsActions {
     }
   }
 
+  changeQuantityToItem(String productId, double newQuantity) {
+    int cartIndex = _cart.indexWhere(
+            (p) => p.productId == productId);
+
+    if((_cart[cartIndex].product.remainedQuantity) <= _cart[cartIndex].quantity){
+      return;
+    }
+
+    if(cartIndex != -1){
+      _cart[cartIndex].quantity = newQuantity;
+    }
+  }
+
   isPriceBiggerThanDiscountPrice(double price, double discount) {
     return price > discount;
   }
@@ -115,6 +129,56 @@ class CartsActions {
 
   isThereAnyItemInsideCart(){
     return _cart.isNotEmpty;
+  }
+
+  final Map<CartQuantityAfterComa, double> _decimalWithCartQuantityAfterComa = <CartQuantityAfterComa, double>{
+    CartQuantityAfterComa.NO_THING : 0,
+    CartQuantityAfterComa.AND_1_ON_10 : 0.1,
+    CartQuantityAfterComa.AND_1_ON_9 : 0.9,
+    CartQuantityAfterComa.AND_1_ON_8 : 0.125,
+    CartQuantityAfterComa.AND_1_ON_7 : 0.1429,
+    CartQuantityAfterComa.AND_1_ON_6 : 0.1667,
+    CartQuantityAfterComa.AND_1_ON_5 : 0.2,
+    CartQuantityAfterComa.AND_1_ON_4 : 0.25,
+    CartQuantityAfterComa.AND_1_ON_3 : 0.3333,
+    CartQuantityAfterComa.AND_1_ON_2 : 0.5,
+    CartQuantityAfterComa.AND_3_ON_4 : 0.75,
+  };
+
+  final Map<double, String> _afterComaToName = <double, String>{
+    0:"",
+    0.1: "عشر",
+    0.9: "تسع",
+    0.125: "ثمن",
+    0.1429: "سبع",
+    0.1667: "سدس",
+    0.2: "خمس",
+    0.25: "ريع",
+    0.3333: "ثلث",
+    0.5: "نص",
+    0.75: "ثلاثة أرباع (إلا ربع)",
+  };
+
+  Map<double, String> getAfterComaToName() => _afterComaToName;
+
+  Map<CartQuantityAfterComa, double> getDecimalWithCartQuantityAfterComa() => _decimalWithCartQuantityAfterComa;
+
+  CartQuantityAfterComa convertDecimalToCartQuantityAfterComa(double number) {
+    int wholePart = number.floor();
+    double decimalPart = number - wholePart;
+
+    // تقريب الجزء العشري إلى 4 أرقام عشرية
+    decimalPart = double.parse(decimalPart.toStringAsFixed(4));
+
+    CartQuantityAfterComa key = CartQuantityAfterComa.NO_THING;
+    for (var entry in _decimalWithCartQuantityAfterComa.entries) {
+      if (decimalPart == entry.value) {
+        key = entry.key;
+        break;
+      }
+    }
+
+    return key;
   }
 
   // void removeItem(String item) {
@@ -139,7 +203,7 @@ class CartsActions {
     }
   }
 
-  updateItemQuantity(String productId, int quantity) async {
+  updateItemQuantity(String productId, double quantity) async {
     int cartIndex = _cart.indexWhere(
             (p) => p.productId == productId);
     if(cartIndex != -1){
@@ -158,6 +222,7 @@ class CartsActions {
   removeCart() {
    _cart.clear();
   }
+
   idThereProductInCart(String productId) {
     if (_cart.any((p)=> p.productId == productId)) {
       return true;

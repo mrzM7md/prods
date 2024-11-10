@@ -34,7 +34,8 @@ class AddEditProductPage extends StatelessWidget {
     }else{
       cubit.productsActions.clearItemFromSelectedCategoriesForProductAddingFilter();
     }
-    
+    CategoriesCubit.get(mainContext).getAllCategories();
+
     return Scaffold(
        body: SafeArea(
            child: Directionality(
@@ -58,7 +59,6 @@ class AddEditProductPage extends StatelessWidget {
                      boughtQuantityController.text = mainState.productModel!.boughtQuantity.toString();
                      titleWord.clear();
                      titleWord.write("تعديل المنتج ''${mainState.productModel!.name}''");
-                     CategoriesCubit.get(mainContext).getAllCategories();
                    }
                  }
 

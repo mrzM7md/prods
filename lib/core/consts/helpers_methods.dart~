@@ -21,7 +21,7 @@ getNumberNearerAfterComa(double number) {
   double decimalPart = number - wholePart;
 
   // تقريب الجزء العشري إلى 4 أرقام عشرية
-  return double.parse(decimalPart.toStringAsFixed(4));
+  decimalPart = double.parse(decimalPart.toStringAsFixed(4));
 }
 getFormatedDate(DateTime date) => DateFormat('h:mma  d/M/yyyy').format(date);
 

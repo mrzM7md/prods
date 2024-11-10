@@ -5,11 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:prods/core/consts/app_colors.dart';
 import 'package:prods/core/consts/app_images.dart';
 import 'package:prods/core/consts/sscreens_size.dart';
+import 'package:prods/core/enums/enums.dart';
 import 'package:prods/features/control_panel/business/control_panel_cubit.dart';
 import 'package:prods/features/control_panel/business/sections/carts_cubit.dart';
 import 'package:prods/features/control_panel/business/sections/categories_cubit.dart';
 import 'package:prods/features/control_panel/business/sections/invoice_cubit.dart';
 import 'package:prods/features/control_panel/features/carts/presentation/show/show_complete_invoice_preparing.dart';
+import 'package:prods/features/control_panel/features/carts/presentation/show/show_quantities_of_products_dialog.dart';
 import 'package:prods/features/control_panel/features/categories/presentation/widgets/add_edit_category_widget.dart';
 import 'package:prods/features/control_panel/models/product_model.dart';
 import '../../../../../core/consts/helpers_methods.dart';
@@ -134,9 +136,9 @@ class CartPage extends StatelessWidget {
                                       getAppDataColumn('خيارات'),
                                       getAppDataColumn('الكمية'),
                                       getAppDataColumn('اسم المنتج'),
-                                      getAppDataColumn('السعر بقل الخصم'),
-                                      getAppDataColumn('مقدار الخصم على القطعة'),
-                                      getAppDataColumn('السعر بعد الخصم'),
+                                      getAppDataColumn('سعر القطعة الواحدة قبل الخصم'),
+                                      getAppDataColumn('مقدار الخصم على القطعة الواحدة'),
+                                      getAppDataColumn('سعر القطعة الواحدة بعد الخصم'),
                                       getAppDataColumn('السغر النهائي'),
                                     ],
                                     rows: List<DataRow>.generate(data.length,
@@ -205,7 +207,7 @@ class CartPage extends StatelessWidget {
                                                         }, discountController);
                                                   },
                                                   child: BlocBuilder<CartsCubit, ControlPanelState>(
-                                                    buildWhen: (previous, current) => current is PlusMinusOneQuantityToItemAndAddDiscountState && current.productId == data[index].id,
+                                                    buildWhen: (previous, current) => current is ChangeQuantityToItemAndAddDiscountState && current.productId == data[index].id,
                                                     builder: (context, state) {
                                                       if(cartsCubit.cartActions.getDiscount(data[index].id) > 0.0){
                                                         return const Text("تعديل الخصم");
@@ -219,20 +221,30 @@ class CartPage extends StatelessWidget {
 ),
                                           DataCell( Row(
                                                 children: [
-                                                  IconButton(onPressed: (){
-                                                    cartsCubit.plusOneQuantityToItem(data[index].id);
-                                                  }, icon: const Icon(CupertinoIcons.plus)),
+                                                  // IconButton(onPressed: (){
+                                                  //   cartsCubit.plusOneQuantityToItem(data[index].id);
+                                                  // }, icon: const Icon(CupertinoIcons.plus)),
                                                   const SizedBox(width: 20,),
                                                   BlocBuilder<CartsCubit, ControlPanelState>(
-                                                    buildWhen: (previous, current) => current is PlusMinusOneQuantityToItemAndAddDiscountState,
+                                                    buildWhen: (previous, current) => current is ChangeQuantityToItemAndAddDiscountState,
                                                     builder: (context, state) {
-                                                      return Text("${cartsCubit.cartActions.getQuantity(data[index].id)} / ${data[index].remainedQuantity}");
+                                                      return Row(
+                                                        children: [
+                                                          getAppButton(color: AppColors.appLightBlueColor, textColor: Colors.black, 
+                                                              text: "${cartsCubit.cartActions.getQuantity(data[index].id).toInt() != 0 ? "${cartsCubit.cartActions.getQuantity(data[index].id).toInt()} ${cartsCubit.cartActions.convertDecimalToCartQuantityAfterComa(cartsCubit.cartActions.getQuantity(data[index].id)) != CartQuantityAfterComa.NO_THING  ?"و":""}" : ""} ${cartsCubit.cartActions.getAfterComaToName()[getNumberNearerAfterComa(cartsCubit.cartActions.getQuantity(data[index].id))]}"
+                                                              , onClick: (){
+                                                            showCustomDialog(pageContext, data[index].id, data[index].name, data[index].remainedQuantity.toDouble(), cartsCubit.cartActions.getQuantity(data[index].id).toDouble());
+                                                          }),
+                                                          const Text(" / "),
+                                                          Text("${data[index].remainedQuantity}"),
+                                                        ],
+                                                      );
                                                     },
                                                   ),
                                                   const SizedBox(width: 20,),
-                                                  IconButton(onPressed: (){
-                                                    cartsCubit.minusOneQuantityToItem(data[index].id);
-                                                  }, icon: const Icon(CupertinoIcons.minus)),
+                                                  // IconButton(onPressed: (){
+                                                  //   cartsCubit.minusOneQuantityToItem(data[index].id);
+                                                  // }, icon: const Icon(CupertinoIcons.minus)),
                                                 ],
                                               ),
                                             ),
@@ -242,14 +254,17 @@ class CartPage extends StatelessWidget {
                                               ),
                                           ),
                                           DataCell(
-                                              Text(
-                                                formatNumber(data[index].price),
-                                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                              Align(
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  formatNumber(data[index].price),
+                                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                                ),
                                               ),
                                             ),
                                           DataCell(
                                             BlocBuilder<CartsCubit, ControlPanelState>(
-                                            buildWhen: (previous, current) => current is PlusMinusOneQuantityToItemAndAddDiscountState && current.productId == data[index].id,
+                                            buildWhen: (previous, current) => current is ChangeQuantityToItemAndAddDiscountState && current.productId == data[index].id,
                                             builder: (context, state) {
                                               return Align(
                                                   alignment: Alignment.center,
@@ -261,7 +276,7 @@ class CartPage extends StatelessWidget {
                                           )
                                             ),
                                           DataCell(BlocBuilder<CartsCubit, ControlPanelState>(
-                                                buildWhen: (previous, current) => current is PlusMinusOneQuantityToItemAndAddDiscountState && current.productId == data[index].id,
+                                                buildWhen: (previous, current) => current is ChangeQuantityToItemAndAddDiscountState && current.productId == data[index].id,
                                                 builder: (context, state) {
                                                   return Align(
                                                       alignment: Alignment.center,
@@ -273,7 +288,7 @@ class CartPage extends StatelessWidget {
                                               ),
                                           ),
                                           DataCell(BlocBuilder<CartsCubit, ControlPanelState>(
-                                              buildWhen: (previous, current) => current is PlusMinusOneQuantityToItemAndAddDiscountState && current.productId == data[index].id,
+                                              buildWhen: (previous, current) => current is ChangeQuantityToItemAndAddDiscountState && current.productId == data[index].id,
                                             builder: (context, state) {
                                             return Align(
                                             alignment: Alignment.center,
@@ -298,7 +313,7 @@ class CartPage extends StatelessWidget {
                         const Text("المجموع", style: TextStyle(fontWeight: FontWeight.bold),),
                         const SizedBox(width: 10,),
                         BlocBuilder<CartsCubit, ControlPanelState>(
-                          buildWhen: (previous, current) => current is PlusMinusOneQuantityToItemAndAddDiscountState,
+                          buildWhen: (previous, current) => current is ChangeQuantityToItemAndAddDiscountState,
                           builder: (context, state) {
                             return Align(
                                 alignment: Alignment.center,

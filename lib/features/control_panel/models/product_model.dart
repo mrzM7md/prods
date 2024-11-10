@@ -6,8 +6,8 @@ class ProductModel extends Equatable {
   final String name;
   final double price;
   final List<dynamic> categoryIds;
-  final int remainedQuantity;
-  final int boughtQuantity;
+  final double remainedQuantity;
+  final double boughtQuantity;
   final Timestamp createdAt;
   final Timestamp updatedAt;
 
@@ -27,8 +27,8 @@ class ProductModel extends Equatable {
         name: document['name'],
         price: document['price'],
         categoryIds: document['categoryIds'],
-        remainedQuantity: document['remainedQuantity'],
-        boughtQuantity: document['boughtQuantity'],
+        remainedQuantity: double.parse(document['remainedQuantity'].toString()),
+        boughtQuantity: double.parse(document['boughtQuantity'].toString()),
         createdAt: document['createdAt'],
         updatedAt: document['updatedAt']);
   }

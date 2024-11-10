@@ -160,7 +160,8 @@ class AddEditProductPage extends StatelessWidget {
                                    const SizedBox(height: 10,),
                                    getAppTextField(
                                        inputType: TextInputType.number,
-                                       text: "سعر المنتج", onChange: (value){
+                                       text: "سعر المنتج",
+                                       onChange: (value){
                                      if (!RegExp(r'^\d*\.?\d*$').hasMatch(value)) {
                                        priceController.text = value.replaceAll(RegExp(r'[^0-9.]'), '');
                                        priceController.selection = TextSelection.fromPosition(
@@ -169,7 +170,7 @@ class AddEditProductPage extends StatelessWidget {
                                      }
                                    }, validator: (value){
                                          if(value.toString().isEmpty){
-                                           return "السعر يجب أن يكون رقم صحيح";
+                                           return "السعر يجب أن يكون قيمة رقمية";
                                          }
                                          return null;
                                        },
@@ -179,8 +180,8 @@ class AddEditProductPage extends StatelessWidget {
                                getAppTextField(
                                    inputType: TextInputType.number,
                                    text: "الكمية المتبقية", onChange: (value){
-                                 if (!RegExp(r'^\d*$').hasMatch(value)) {
-                                   remainedQuantityController.text = value.replaceAll(RegExp(r'[^0-9]'), '');
+                                 if (!RegExp(r'^\d*\.?\d*$').hasMatch(value)) {
+                                   remainedQuantityController.text = value.replaceAll(RegExp(r'[^0-9.]'), '');
                                    remainedQuantityController.selection = TextSelection.fromPosition(
                                      TextPosition(offset: remainedQuantityController.text.length),
                                    );
@@ -195,8 +196,8 @@ class AddEditProductPage extends StatelessWidget {
                                getAppTextField(
                                    inputType: TextInputType.number,
                                    text: "الكمية التي تم بيعها", onChange: (value){
-                                 if (!RegExp(r'^\d*$').hasMatch(value)) {
-                                   boughtQuantityController.text = value.replaceAll(RegExp(r'[^0-9]'), '');
+                                 if (!RegExp(r'^\d*\.?\d*$').hasMatch(value)) {
+                                   boughtQuantityController.text = value.replaceAll(RegExp(r'[^0-9.]'), '');
                                    boughtQuantityController.selection = TextSelection.fromPosition(
                                      TextPosition(offset: boughtQuantityController.text.length),
                                    );
@@ -223,12 +224,12 @@ class AddEditProductPage extends StatelessWidget {
                                   if(formKey.currentState!.validate()){
                                     if(id != null){
                                       cubit.editProduct(
-                                          ProductModel(id: id!, name: nameController.text, price: double.parse(priceController.text), categoryIds: cubit.productsActions.getSelectedCategoriesForProductAdding(), remainedQuantity: int.parse(remainedQuantityController.text), boughtQuantity: int.parse(boughtQuantityController.text), createdAt: Timestamp.now(), updatedAt: Timestamp.now())
+                                          ProductModel(id: id!, name: nameController.text, price: double.parse(priceController.text), categoryIds: cubit.productsActions.getSelectedCategoriesForProductAdding(), remainedQuantity: double.parse(remainedQuantityController.text), boughtQuantity: double.parse(boughtQuantityController.text), createdAt: Timestamp.now(), updatedAt: Timestamp.now())
                                       );
                                     }
                                     else{
                                       cubit.addNewProduct(
-                                          ProductModel(id: "", name: nameController.text, price: double.parse(priceController.text), categoryIds: cubit.productsActions.getSelectedCategoriesForProductAdding(), remainedQuantity: int.parse(remainedQuantityController.text), boughtQuantity: int.parse(boughtQuantityController.text), createdAt: Timestamp.now(), updatedAt: Timestamp.now())
+                                          ProductModel(id: "", name: nameController.text, price: double.parse(priceController.text), categoryIds: cubit.productsActions.getSelectedCategoriesForProductAdding(), remainedQuantity: double.parse(remainedQuantityController.text), boughtQuantity: double.parse(boughtQuantityController.text), createdAt: Timestamp.now(), updatedAt: Timestamp.now())
                                       );
                                     }
 

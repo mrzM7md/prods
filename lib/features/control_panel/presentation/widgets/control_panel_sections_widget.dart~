@@ -130,7 +130,7 @@ class ControlPanelSectionsWidget extends StatelessWidget {
             current is ChangeControlPanelSectionState,
             builder: (context, state) {
               return DrawerListTileWidget(
-                title: "المبيعات",
+                title: "المنتجات",
                 icon: AppImages.products,
                 press: () {
                   cubit.setControlPanelSections(ControlPanelSections.PRODUCTS);

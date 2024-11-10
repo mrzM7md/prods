@@ -168,15 +168,22 @@ final class AddToCartState implements ControlPanelState{
   const AddToCartState({required this.productId, required this.isSuccess, required this.message});
 }
 
-final class PlusMinusOneQuantityToItemAndAddDiscountState implements ControlPanelState{
+final class ChangeQuantityToItemAndAddDiscountState implements ControlPanelState{
   final String productId;
-  const PlusMinusOneQuantityToItemAndAddDiscountState({required this.productId});
+  const ChangeQuantityToItemAndAddDiscountState({required this.productId});
 }
 
 final class DeleteItemFromCartState implements ControlPanelState{
   final String productId, message;
   final bool isLoaded;
   const DeleteItemFromCartState({required this.productId, required this.isLoaded, required this.message});
+}
+
+final class ChangeCartQuantityAfterComa implements ControlPanelState {
+  final CartQuantityAfterComa cartQuantityAfterComa;
+  final String id;
+
+  ChangeCartQuantityAfterComa({required this.cartQuantityAfterComa, required this.id});
 }
 // ### END CARTS STATES ### //
 

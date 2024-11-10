@@ -180,7 +180,7 @@ class InvoiceActions {
   clearInvoiceDetailsIds() => _invoiceDetailsIds.clear();
 
   late WriteBatch _batch;
-  late int _remainedQuantity, _boughtQuantity;
+  late double _remainedQuantity, _boughtQuantity;
   late CollectionReference _invoiceColRef;
   late CollectionReference _productColRef;
 

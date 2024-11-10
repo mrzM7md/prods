@@ -23,3 +23,17 @@ enum ConnectivityState{
     ONLINE,
     OFFLINE,
 }
+
+enum CartQuantityAfterComa {
+    NO_THING,
+    AND_1_ON_10,
+    AND_1_ON_9,
+    AND_1_ON_8,
+    AND_1_ON_7,
+    AND_1_ON_6,
+    AND_1_ON_5,
+    AND_1_ON_4,
+    AND_1_ON_3,
+    AND_1_ON_2,
+    AND_3_ON_4,
+}

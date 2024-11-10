@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:prods/core/enums/enums.dart';
 import 'package:prods/features/control_panel/business/control_panel_cubit.dart';
 import 'package:prods/features/control_panel/business/sections/carts_actions.dart';
 import 'package:prods/features/control_panel/business/sections/products_actions.dart';
@@ -24,15 +25,19 @@ class CartsCubit extends ControlPanelCubit {
 
   plusOneQuantityToItem(String productId) {
     cartActions.plusOneQuantityToItem(productId);
-    emit(PlusMinusOneQuantityToItemAndAddDiscountState(productId: productId));
+    emit(ChangeQuantityToItemAndAddDiscountState(productId: productId));
   }
   minusOneQuantityToItem(String productId) {
     cartActions.minusOneQuantityToItem(productId);
-    emit(PlusMinusOneQuantityToItemAndAddDiscountState(productId: productId));
+    emit(ChangeQuantityToItemAndAddDiscountState(productId: productId));
+  }
+  changeQuantityToItem(String productId, double newQuantity) {
+    cartActions.changeQuantityToItem(productId, newQuantity);
+    emit(ChangeQuantityToItemAndAddDiscountState(productId: productId));
   }
   addDiscountToItem(String productId, double discount) {
     cartActions.addDiscountToItem(productId, discount);
-    emit(PlusMinusOneQuantityToItemAndAddDiscountState(productId: productId));
+    emit(ChangeQuantityToItemAndAddDiscountState(productId: productId));
   }
   deleteItemFromCart(String productId) async {
     try{
@@ -55,6 +60,10 @@ class CartsCubit extends ControlPanelCubit {
     catch(ex){
       emit(const GetProductsByIdsState(products: null, isLoaded: true, message: "حدث خطأ ما", isSuccess: false));
     }
+  }
+
+  changeCartQuantityAfterComa(CartQuantityAfterComa cartQuantityAfterComa, String id){
+    emit(ChangeCartQuantityAfterComa(cartQuantityAfterComa: cartQuantityAfterComa, id: id));
   }
 
 }

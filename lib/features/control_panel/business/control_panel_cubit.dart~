@@ -16,10 +16,6 @@ class ControlPanelCubit extends Cubit<ControlPanelState> {
 
   static ControlPanelCubit get(context) => BlocProvider.of(context);
 
-  returnToInitialState(){
-    emit(ControlPanelInitial());
-  }
-
   ControlPanelSections? _section = ControlPanelSections.CATEGORIES;
   ControlPanelSections? getControlPanelSection() => _section;
   setSection(ControlPanelSections? section) => _section = section;
