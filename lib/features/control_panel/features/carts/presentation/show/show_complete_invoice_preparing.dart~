@@ -97,10 +97,10 @@ OverlayEntry showCompleteInvoicePreparing(BuildContext pageContext, double total
                       textColor: Colors.white,
                       text: "إنشاء الفاتورة",
                       onClick: () async {
-                        if(key.currentState!.validate()){
-                          if(addingDiscountOnTotalController.text.isEmpty){
-                            addingDiscountOnTotalController.text = "0.0";
-                          }
+                        if(addingDiscountOnTotalController.text.isEmpty){
+                        addingDiscountOnTotalController.text = "0.0";
+                      }
+                      if(key.currentState!.validate()){
                           overlayEntry.remove();
                           invoiceCubit.addNewInvoiceThenRemoveCart(context: pageContext, customerName: customerNameController.text, discount: double.parse(addingDiscountOnTotalController.text));
                           generateInvoiceFromInvoiceModels(ivd:
@@ -123,7 +123,7 @@ OverlayEntry showCompleteInvoicePreparing(BuildContext pageContext, double total
                                 invoicesDetailsIds: const [],
                                 invoiceNumber: format_date.DateFormat('yyyyMMdd-HHmmss').format(DateTime.now()),
                                 createdAt: Timestamp.now(),
-                              ));
+                              ), pageContext: pageContext);
                         }
                         },
                     ),

@@ -41,7 +41,7 @@ class CategoriesCubit extends ControlPanelCubit {
       emit(GetAllCategoriesState(categories: getCategories(), isLoaded: true, message: "ام جلب الأصنافب نجاح", isSuccess: true));
     }
     catch(ex){
-      print("EEEEEEEEEEEEEEEE:::: $ex");
+      print("حدث خطأ ما: $ex");
       emit(const GetAllCategoriesState(categories: null, isLoaded: true, message: "حدث خطأ ما", isSuccess: false));
     }
   }
@@ -59,6 +59,7 @@ class CategoriesCubit extends ControlPanelCubit {
       setNewItemIntoCategories(categoryModel);
       emit(const AddEditCategoryState(isLoaded: true, isSuccess: true, message: "تم إضافة صنف جديد بنجاح"));
     }catch(ex){
+      print("حدث خطأ ما: $ex");
       emit(const AddEditCategoryState(isLoaded: true, isSuccess: true, message: "حدث خطأ ما"));
     }
   }
@@ -96,6 +97,7 @@ class CategoriesCubit extends ControlPanelCubit {
       emit(const AddEditCategoryState(isLoaded: true, isSuccess: true, message: "تم التعديل بنجاح"));
       editItemInsideCategories(index, editedCategory);
     }catch(ex){
+      print("حدث خطأ ما: $ex");
       emit(const AddEditCategoryState(isLoaded: true, isSuccess: false, message: "حدث خطأ ما"));
     }
   }

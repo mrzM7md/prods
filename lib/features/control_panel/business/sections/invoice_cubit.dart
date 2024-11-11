@@ -31,6 +31,7 @@ class InvoiceCubit extends ControlPanelCubit {
       emit(ChangeInvoiceTypeSelectedState(type: InvoiceFilterType.ALLDAYS, totalPrice: totalPrice));
 
     }catch(ex){
+      print("حدث خطأ ما: $ex");
       emit(GetInvoiceState(isLoaded: true, message: "حدث خطأ ما", isSuccess: false));
     }
   }
@@ -44,6 +45,7 @@ class InvoiceCubit extends ControlPanelCubit {
       double totalPrice = await invoiceActions.getTotalPriceOfInvoice();
       emit(ChangeInvoiceTypeSelectedState(type: InvoiceFilterType.TODAY, totalPrice: totalPrice));
     }catch(ex){
+      print("حدث خطأ ما: $ex");
       emit(GetInvoiceState(isLoaded: true, message: "حدث خطأ ما", isSuccess: false));
     }
   }
@@ -85,6 +87,7 @@ class InvoiceCubit extends ControlPanelCubit {
       List<InvoiceDetailModel>? invoiceDetails = await invoiceActions.getInvoiceDetails(invoiceId);
       emit(GetInvoiceDetailsState(isLoaded: true, message: "تم جلب تفاصيل الفاتورة بنجاح", isSuccess: true, invoiceDetails: invoiceDetails ?? [], invoiceId: invoiceId));
     }catch(ex){
+      print("حدث خطأ ما: $ex");
       emit(GetInvoiceDetailsState(isLoaded: true, message: "حدث خطأ ما", isSuccess: false, invoiceDetails: [], invoiceId: invoiceId));
     }
   }

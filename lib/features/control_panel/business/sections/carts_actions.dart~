@@ -156,7 +156,7 @@ class CartsActions {
     0.25: "ريع",
     0.3333: "ثلث",
     0.5: "نص",
-    0.75: "إلا ربع",
+    0.75: "ثلاثة أرباع (إلا ربع)",
   };
 
   Map<double, String> getAfterComaToName() => _afterComaToName;

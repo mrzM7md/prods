@@ -5,6 +5,8 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
+import 'package:prods/core/enums/enums.dart';
+import 'package:prods/features/control_panel/business/sections/carts_cubit.dart';
 import 'package:prods/features/control_panel/models/invoice_detail_model.dart';
 import 'package:prods/features/control_panel/models/invoice_model.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -25,7 +27,7 @@ getNumberNearerAfterComa(double number) {
 }
 getFormatedDate(DateTime date) => DateFormat('h:mma  d/M/yyyy').format(date);
 
-Future<File?> generateInvoiceFromInvoiceModels({required List<InvoiceDetailModel> ivd, required InvoiceModel invoice}) async {
+Future<File?> generateInvoiceFromInvoiceModels({required List<InvoiceDetailModel> ivd, required InvoiceModel invoice, required pageContext}) async {
   final pdf = pw.Document();
 
   // تحميل الخط
@@ -64,7 +66,10 @@ Future<File?> generateInvoiceFromInvoiceModels({required List<InvoiceDetailModel
                     child: pw.Text(ivd[index].productName, style: pw.TextStyle(font: ttf, fontSize: 8)),
                     ),
                     pw.Text(formatNumber(ivd[index].priceAfterDiscount), style: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold, fontSize: 8)),
-                    pw.Text(formatNumber(ivd[index].quantity), style: pw.TextStyle(font: ttf, fontSize: 8)),
+                    
+                    // "${ivd[index].quantity.toInt() != 0 ? "${ivd[index].quantity.toInt()} ${CartsCubit.get(pageContext).cartActions.convertDecimalToCartQuantityAfterComa(ivd[index].quantity) != CartQuantityAfterComa.NO_THING  ?"و":""}" : ""} ${CartsCubit.get(pageContext).cartActions.getAfterComaToName()[getNumberNearerAfterComa(ivd[index].quantity)]}";
+                    
+                    pw.Text("${ivd[index].quantity.toInt() != 0 ? "${ivd[index].quantity.toInt()} ${CartsCubit.get(pageContext).cartActions.convertDecimalToCartQuantityAfterComa(ivd[index].quantity) != CartQuantityAfterComa.NO_THING  ?"و":""}" : ""} ${CartsCubit.get(pageContext).cartActions.getAfterComaToName()[getNumberNearerAfterComa(ivd[index].quantity)]}", style: pw.TextStyle(font: ttf, fontSize: 8)),
                     pw.Text(formatNumber(ivd[index].priceAfterDiscount * ivd[index].quantity) , style: pw.TextStyle(font: ttf, fontSize: 8)),
                   ],
                 ),

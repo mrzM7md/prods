@@ -32,7 +32,7 @@ class InvoiceDetailModel {
   factory InvoiceDetailModel.fromDocument(Map<String, dynamic> map) {
     return InvoiceDetailModel(
       productId: map['productId'],
-      quantity: map['quantity'],
+      quantity: double.parse(map['quantity'].toString()),
       discountType: map['discountType'],
       discount: map['discount'],
       createdAt: map['createdAt'],

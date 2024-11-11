@@ -123,7 +123,8 @@ OverlayEntry showCompleteInvoicePreparing(BuildContext pageContext, double total
                                 invoicesDetailsIds: const [],
                                 invoiceNumber: format_date.DateFormat('yyyyMMdd-HHmmss').format(DateTime.now()),
                                 createdAt: Timestamp.now(),
-                              ));
+                              ), pageContext: pageContext
+                          );
                         }
                         },
                     ),

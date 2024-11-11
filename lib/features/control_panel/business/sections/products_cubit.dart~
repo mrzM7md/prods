@@ -43,7 +43,6 @@ class ProductsCubit extends ControlPanelCubit {
         emit(GetProductDetailState(productModel: productModel, isLoaded: true, message: "المنتح غير موجود", isSuccess: false));
       }
     }catch(ex){
-      print("حدث خطأ ما: $ex");
       emit(GetProductDetailState(productModel: null, isLoaded: true, message: "حدث خطأ ما", isSuccess: false));
     }
   }

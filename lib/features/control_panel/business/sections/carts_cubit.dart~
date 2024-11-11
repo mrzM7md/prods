@@ -58,7 +58,6 @@ class CartsCubit extends ControlPanelCubit {
       emit(GetProductsByIdsState(products: products, isLoaded: true, message: "تم جلب المنتجات بنجاح", isSuccess: true));
     }
     catch(ex){
-      print("حدث خطأ ما: $ex");
       emit(const GetProductsByIdsState(products: null, isLoaded: true, message: "حدث خطأ ما", isSuccess: false));
     }
   }
