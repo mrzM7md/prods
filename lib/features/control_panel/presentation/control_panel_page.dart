@@ -7,6 +7,7 @@ import 'package:prods/core/consts/widgets_components.dart';
 import 'package:prods/core/enums/enums.dart';
 import 'package:prods/features/control_panel/business/control_panel_cubit.dart';
 import 'package:prods/features/control_panel/features/bills/presentation/invoices_page.dart';
+import 'package:prods/features/control_panel/features/buys/presentation/buys_page.dart';
 import 'package:prods/features/control_panel/features/carts/presentation/cart_page.dart';
 import 'package:prods/features/control_panel/features/categories/presentation/categories_page.dart';
 import 'package:prods/features/control_panel/presentation/widgets/control_panel_sections_widget.dart';
@@ -108,6 +109,8 @@ class ControlPanelPage extends StatelessWidget {
                                   return sl<InvoicesPage>();
                                 case ControlPanelSections.CART:
                                   return sl<CartPage>();
+                                case ControlPanelSections.BUYS:
+                                  return sl<BuysPage>();
                                 default:
                                   return sl<StatisticsPage>();
                               }

@@ -327,7 +327,7 @@ class ProductsPage extends StatelessWidget {
                                               elevation: 0,
                                               // color: Colors.white,
                                               onPressed: () {
-                                                if(data[index].remainedQuantity < 1){
+                                                if(data[index].remainedQuantity < 1.0){
                                                   showCustomToast(context: pageContext, message: "نفدت كمية هذا المنتج", bkgColor: AppColors.appRedColor, textColor: Colors.black);
                                                 } else{
                                                   cartCubit.addToCart(data[index]);

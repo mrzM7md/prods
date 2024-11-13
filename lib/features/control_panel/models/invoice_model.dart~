@@ -15,6 +15,7 @@ class InvoiceModel extends Equatable {
     required this.totalPrice,
     required this.invoicesDetailsIds,
     required this.invoiceNumber,
+    required this.createdAt,
   });
 
   factory InvoiceModel.fromDocument(Map<String, dynamic> data){
@@ -24,7 +25,8 @@ class InvoiceModel extends Equatable {
       discount: data['discount'],
       totalPrice: data['totalPrice'],
       invoiceNumber: data['invoiceNumber'],
-      invoicesDetailsIds: data['invoicesDetailsIds'] ?? []
+      invoicesDetailsIds: data['invoicesDetailsIds'] ?? [],
+      createdAt: data['createdAt'],
     );
   }
 
@@ -34,6 +36,7 @@ class InvoiceModel extends Equatable {
     'totalPrice': totalPrice,
     'invoicesDetailsIds': invoicesDetailsIds,
     'invoiceNumber': invoiceNumber,
+    'createdAt': createdAt,
   };
 
   @override

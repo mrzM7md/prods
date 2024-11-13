@@ -25,7 +25,7 @@ class ProductModel extends Equatable {
     return ProductModel(
         id: document['id'],
         name: document['name'],
-        price: double.parse(document['price'].toString()),
+        price: document['price'],
         categoryIds: document['categoryIds'],
         remainedQuantity: double.parse(document['remainedQuantity'].toString()),
         boughtQuantity: double.parse(document['boughtQuantity'].toString()),

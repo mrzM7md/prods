@@ -108,6 +108,27 @@ class ControlPanelSectionsWidget extends StatelessWidget {
             current is ChangeControlPanelSectionState,
             builder: (context, state) {
               return DrawerListTileWidget(
+                title: "المشتريات",
+                icon: AppImages.buys,
+                press: () {
+                  cubit.setControlPanelSections(ControlPanelSections.BUYS);
+                  hiddenSectionsBoardOnSmallScreens(context, cubit);
+                },
+                bgColor: cubit.getControlPanelSection() ==
+                    ControlPanelSections.BUYS
+                    ? AppColors.appLightBlueColor
+                    : null,
+              );
+            },
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          BlocBuilder<ControlPanelCubit, ControlPanelState>(
+            buildWhen: (previous, current) =>
+            current is ChangeControlPanelSectionState,
+            builder: (context, state) {
+              return DrawerListTileWidget(
                 title: "الأصناف",
                 icon: AppImages.categories,
                 press: () {

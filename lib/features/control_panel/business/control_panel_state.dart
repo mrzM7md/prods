@@ -211,3 +211,35 @@ final class GetInvoiceDetailsState implements ControlPanelState {
   const GetInvoiceDetailsState({required this.invoiceId, required this.isLoaded, required this.message, required this.invoiceDetails, required this.isSuccess});
 }
 // ### END INVOICES STATES ### //
+
+// ### START BUYS STATUS ### //
+final class GetAllBuysState implements ControlPanelState{
+  final List<BuyModel>? buys;
+  final bool isLoaded, isSuccess;
+  final String message;
+
+  const GetAllBuysState({required this.buys, required this.isLoaded, required this.isSuccess, required this.message});
+}
+
+final class AddEditBuyState extends Equatable implements ControlPanelState{
+  final BuyModel? buyModel;
+  final bool isLoaded, isSuccess, isForAdd;
+  final String message;
+
+  const AddEditBuyState({required this.buyModel, required this.isLoaded, required this.isSuccess, required this.message, required this.isForAdd});
+
+  @override
+  List<Object?> get props => [buyModel, isLoaded, isSuccess, message, isForAdd];
+}
+
+final class DeleteBuyState extends Equatable implements ControlPanelState{
+  final BuyModel buyModel;
+  final bool isLoaded, isSuccess;
+  final String message;
+
+  const DeleteBuyState({required this.buyModel, required this.isLoaded, required this.isSuccess, required this.message});
+
+  @override
+  List<Object?> get props => [buyModel, isLoaded, isSuccess, message];
+}
+// ### END BUYS STATUS ### //

@@ -23,7 +23,7 @@ class InvoiceModel extends Equatable {
       id: data['id'],
       customerName: data['customerName'],
       discount: data['discount'],
-      totalPrice: data['totalPrice'],
+      totalPrice: double.parse(data['totalPrice'].toString()),
       invoiceNumber: data['invoiceNumber'],
       invoicesDetailsIds: data['invoicesDetailsIds'] ?? [],
       createdAt: data['createdAt'],

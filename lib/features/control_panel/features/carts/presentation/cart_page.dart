@@ -184,10 +184,12 @@ class CartPage extends StatelessWidget {
                                                     }
                                                     late OverlayEntry showOverlayEntry;
                                                     showOverlayEntry = showAddOnFieldMessage((value){
-                                                      discountController.text = value.replaceAll(RegExp(r'[^0-9.]'), '');
-                                                      discountController.selection = TextSelection.fromPosition(
-                                                        TextPosition(offset: discountController.text.length),
-                                                      );
+                                                      if (!RegExp(r'^\d*$').hasMatch(value)) {
+                                                        discountController.text = value.replaceAll(RegExp(r'[^0-9]'), '');
+                                                        discountController.selection = TextSelection.fromPosition(
+                                                          TextPosition(offset: discountController.text.length),
+                                                        );
+                                                      }
                                                     },
                                                             (value){
                                                           if (value.toString().isEmpty || value == null) {
@@ -198,7 +200,7 @@ class CartPage extends StatelessWidget {
                                                             return "يجب أن يكون الخصم أقل من السعر";
                                                           }
                                                           return null;
-                                                        },addDiscountFormKey,pageContext, Colors.white, "إضافة خصم إلى'' ${data[index].name}''", "السعر الأصلي ${data[index].price}",
+                                                        },addDiscountFormKey,pageContext, Colors.white, "إضافة خصم إلى'' ${data[index].name}''", "السعر الأصلي ${formatNumber(data[index].price)}",
                                                             (){
                                                           if(addDiscountFormKey.currentState!.validate()){
                                                             cartsCubit.addDiscountToItem(data[index].id, double.parse(discountController.text));

@@ -452,9 +452,9 @@ class ProductsPage extends StatelessWidget {
                                             )),
                                       ),
                                       getAppDataCell(
-                                          formatNumber(data[index].remainedQuantity)),
+                                          "${data[index].remainedQuantity}"),
                                       getAppDataCell(
-                                          formatNumber(data[index].boughtQuantity)),
+                                          "${data[index].boughtQuantity}"),
                                       getAppDataCell(getFormatedDate(
                                           data[index].createdAt.toDate())),
                                       getAppDataCell(

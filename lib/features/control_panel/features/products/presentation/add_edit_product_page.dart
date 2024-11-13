@@ -219,12 +219,14 @@ class AddEditProductPage extends StatelessWidget {
                                    return getAppProgress();
                                  }
 
+                                 Timestamp createdAt = state is AddEditProductState && state.isLoaded ? state.productModel!.createdAt : Timestamp.now();
+
                                 return getAppButton(color: AppColors.appGreenColor, textColor: Colors.black, text: "حفظ",
                                     onClick: () {
                                   if(formKey.currentState!.validate()){
                                     if(id != null){
                                       cubit.editProduct(
-                                          ProductModel(id: id!, name: nameController.text, price: double.parse(priceController.text), categoryIds: cubit.productsActions.getSelectedCategoriesForProductAdding(), remainedQuantity: double.parse(remainedQuantityController.text), boughtQuantity: double.parse(boughtQuantityController.text), createdAt: Timestamp.now(), updatedAt: Timestamp.now())
+                                          ProductModel(id: id!, name: nameController.text, price: double.parse(priceController.text), categoryIds: cubit.productsActions.getSelectedCategoriesForProductAdding(), remainedQuantity: double.parse(remainedQuantityController.text), boughtQuantity: double.parse(boughtQuantityController.text), createdAt: createdAt, updatedAt: Timestamp.now())
                                       );
                                     }
                                     else{

@@ -73,14 +73,14 @@ OverlayEntry showCompleteInvoicePreparing(BuildContext pageContext, double total
                             const SizedBox(height: 10,),
                             getAppTextField(
                               inputType: TextInputType.number,
-                              text: " [$totalPrice] خصم إضافي على المحموع",
+                              text: " [${formatNumber(totalPrice)}] خصم إضافي على المحموع",
                               onChange: (value){
-                              if (!RegExp(r'^\d*\.?\d*$').hasMatch(value)) {
-                                addingDiscountOnTotalController.text = value.replaceAll(RegExp(r'[^0-9.]'), '');
-                                addingDiscountOnTotalController.selection = TextSelection.fromPosition(
-                                  TextPosition(offset: addingDiscountOnTotalController.text.length),
-                                );
-                              }
+                                if (!RegExp(r'^\d*$').hasMatch(value)) {
+                                  addingDiscountOnTotalController.text = value.replaceAll(RegExp(r'[^0-9]'), '');
+                                  addingDiscountOnTotalController.selection = TextSelection.fromPosition(
+                                    TextPosition(offset: addingDiscountOnTotalController.text.length),
+                                  );
+                                }
                             }, validator: (value){
                                 if(double.parse(value.toString()) > totalPrice){
                                   return "لا مبكن أن يكون الخصم أكبر من المبلغ نفسه!";

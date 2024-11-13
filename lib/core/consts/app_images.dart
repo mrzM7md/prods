@@ -11,4 +11,5 @@ class AppImages {
   static const support = "assets/images/support.png";
   static const rejectedCart = "assets/images/rejected_cart.png";
   static const appLogo = "assets/images/app_logo.png";
+  static const buys = "assets/images/buys.png";
 }

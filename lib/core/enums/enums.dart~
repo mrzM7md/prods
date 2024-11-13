@@ -2,7 +2,7 @@ enum ControlPanelSections {
     BILLS,
     CATEGORIES,
     PRODUCTS,
-    BUYS,
+    SELLS,
     CART,
 }
 

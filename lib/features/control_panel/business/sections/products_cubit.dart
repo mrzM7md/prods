@@ -76,7 +76,7 @@ class ProductsCubit extends ControlPanelCubit {
       emit(AddEditProductState(productModel: productModel, isLoaded: true, isSuccess: true, message: "تم إضافة منتج جديد بنجاح"));
       setNewItemIntoProducts(productModel);
     }catch(ex){
-      print("حدث خطأ ما: $ex");
+      print("حدث خطأ ما عند إضافة منتج: $ex");
       emit(const AddEditProductState(productModel: null, isLoaded: true, isSuccess: true, message: "حدث خطأ ما"));
     }
   }
