@@ -4,12 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AppActions {
   final User user = FirebaseAuth.instance.currentUser!;
   final CollectionReference collectionRef = FirebaseFirestore.instance.collection('users');
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<CollectionReference<Map<String, dynamic>>> getInvoicesDetailsReference() async {
+  Future<String> getStoreName() async {
     var data = (await collectionRef.doc(user.uid).get()).data() as Map<String, dynamic>;
-    String storeId = data['storeId'];
-    // print("Two:");
-    return FirebaseFirestore.instance.collection("stores").doc(storeId).collection("invoicesDetails");
+    String storeName = data['storeName'];
+    return storeName;
   }
 }

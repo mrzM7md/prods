@@ -27,6 +27,7 @@ TextFormField getAppTextField({
       keyboardType: inputType,
       validator: validator,
       readOnly: readOnly,
+      
       // mouseCursor: MouseCursor.defer,
       onFieldSubmitted: onSubmitted,
       decoration: InputDecoration(
@@ -300,7 +301,7 @@ OverlayEntry showAddOnFieldMessage(
                           validator: validator,
                           controller: controller,
                           fillColor: AppColors.appGrey,
-                          onSubmitted:(value) => onClick,
+                          onSubmitted:(value) => onClick(),
                           obscureText: false,
                           direction: TextDirection.ltr,
                           suffixIconButton: null,

@@ -11,7 +11,7 @@ import 'package:prods/features/control_panel/models/invoice_detail_model.dart';
 import 'package:prods/features/control_panel/models/invoice_model.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-import 'package:prods/core/values//app_values.dart';
+import '../values/names.dart';
 
 String formatNumber(number) {
   final formatter = NumberFormat('#,###');

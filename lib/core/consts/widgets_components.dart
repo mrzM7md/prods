@@ -1,5 +1,6 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:prods/core/consts/style_components.dart';
 
 import 'app_colors.dart';
@@ -15,6 +16,7 @@ TextFormField getAppTextField({
   ValueChanged? onSubmitted,
   TextInputType? inputType,
   bool readOnly = false,
+  List<TextInputFormatter>? inputFormatters,
   required Widget? suffixIconButton,
 }) =>
     TextFormField(
@@ -27,6 +29,7 @@ TextFormField getAppTextField({
       keyboardType: inputType,
       validator: validator,
       readOnly: readOnly,
+      inputFormatters: inputFormatters,
       // mouseCursor: MouseCursor.defer,
       onFieldSubmitted: onSubmitted,
       decoration: InputDecoration(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:prods/core/business/app_cubit.dart';
 import 'package:prods/core/consts/app_colors.dart';
+import 'package:prods/core/consts/show_components.dart';
 import 'package:prods/features/control_panel/business/control_panel_cubit.dart';
 import 'package:prods/features/control_panel/business/sections/app_actions.dart';
 import 'package:prods/features/control_panel/business/sections/buys_actions.dart';
@@ -52,6 +54,7 @@ class ServicesLocator {
     sl.registerLazySingleton(() => CartsCubit(cartActions: sl<CartsActions>(), productsActions: sl<ProductsActions>(), appActions: sl<AppActions>()));
     sl.registerLazySingleton(() => InvoiceCubit(invoiceActions: sl<InvoiceActions>(), appActions: sl<AppActions>()));
     sl.registerLazySingleton(() => BuysCubit(buysActions: sl<BuysActions>(), appActions: sl<AppActions>()));
+    sl.registerLazySingleton(() => AppCubit(appActions: sl<AppActions>()));
 
     sl.registerLazySingleton(() => const CategoriesPage());
     sl.registerLazySingleton(() => const ProductsPage());
@@ -63,5 +66,6 @@ class ServicesLocator {
 
     /// UUID
     sl.registerLazySingleton(() => const Uuid());
+    sl.registerLazySingleton(() => AppDialogs());
   }
 }

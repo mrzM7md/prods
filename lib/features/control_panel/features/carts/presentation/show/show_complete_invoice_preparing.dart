@@ -10,7 +10,7 @@ import 'package:prods/features/control_panel/models/invoice_model.dart';
 import '../../../../../../core/consts/app_colors.dart';
 import '../../../../business/sections/invoice_cubit.dart';
 
-OverlayEntry showCompleteInvoicePreparing(BuildContext pageContext, double totalPrice) {
+OverlayEntry showCompleteSellInvoicePreparing(BuildContext pageContext, double totalPrice) {
   late OverlayEntry overlayEntry;
   InvoiceCubit invoiceCubit = InvoiceCubit.get(pageContext);
   CartsCubit cartsCubit = CartsCubit.get(pageContext);
@@ -142,3 +142,5 @@ OverlayEntry showCompleteInvoicePreparing(BuildContext pageContext, double total
   Overlay.of(pageContext).insert(overlayEntry);
   return  overlayEntry;
 }
+
+

@@ -89,4 +89,9 @@ class BuysCubit extends ControlPanelCubit {
       emit(DeleteBuyState(buyModel: buy, isLoaded: true, isSuccess: false, message: "حدث خطأ ما"));
     }
   }
+
+  clickOnSaveFilterOption() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    emit(ClickOnSaveFilterOptionState());
+  }
 }

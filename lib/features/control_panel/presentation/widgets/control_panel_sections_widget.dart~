@@ -9,7 +9,7 @@ import 'package:prods/core/consts/app_routes.dart';
 import 'package:prods/core/consts/sscreens_size.dart';
 import 'package:prods/core/enums/enums.dart';
 import 'package:prods/core/network/local/cache_helper.dart';
-import 'package:prods/core/values//app_values.dart';
+import 'package:prods/core/values/names.dart';
 import 'package:prods/features/control_panel/business/control_panel_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
 

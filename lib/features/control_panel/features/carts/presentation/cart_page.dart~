@@ -87,7 +87,7 @@ class CartPage extends StatelessWidget {
                                     textColor: Colors.black,
                                     text:"إنشاء فاتورة",
                                     onClick: () async {
-                                      showCompleteSellInvoicePreparing(pageContext, cartsCubit.cartActions.getTotalPrice());
+                                      showCompleteInvoicePreparing(pageContext, cartsCubit.cartActions.getTotalPrice());
                                     });
                               },
                             );

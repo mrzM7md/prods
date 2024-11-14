@@ -9,9 +9,7 @@ class BuysActions {
   final List<BuyModel> _buys = [];
 
   Future<List<BuyModel>> getAllBuys() async {
-    QuerySnapshot snapshot = await (await getBuysReference()).orderBy('createdAt', descending: true)
-        .orderBy('createdAt', descending: true)
-        .get();
+    QuerySnapshot snapshot = await (await getBuysReference()).orderBy('createdAt', descending: true).get();
     List<BuyModel> buys = [];
     for (var doc in snapshot.docs) {
       var myDoc = (doc.data() as Map<String, dynamic>);

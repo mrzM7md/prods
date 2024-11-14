@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:prods/block_observer.dart';
+import 'package:prods/core/business/app_cubit.dart';
 import 'package:prods/core/network/local/cache_helper.dart';
 import 'package:prods/core/services/services_locator.dart';
 import 'package:prods/features/control_panel/business/sections/carts_cubit.dart';
@@ -46,8 +47,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) =>
-      BlocProvider(
-        create: (context) => sl<CartsCubit>(),
-        child: const ProdsApp(),
+      MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => sl<CartsCubit>(),
+            ),
+            BlocProvider(
+              create: (context) => sl<AppCubit>(),
+            )
+          ], child: const ProdsApp(),
       );
 }

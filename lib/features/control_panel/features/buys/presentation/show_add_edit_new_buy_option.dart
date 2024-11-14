@@ -52,7 +52,7 @@ showAddEditNewBuyOption(BuildContext mainContext, BuyModel? buyModel) {
                   Navigator.of(context).pop();
                 },
                 icon: const Icon(Icons.close)),
-            Expanded(child: Text(buyModel == null ? "عملية شراء جديدة" : buyModel.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),)),
+            Expanded(child: Text(textAlign: TextAlign.end, buyModel == null ? "عملية شراء جديدة" : buyModel.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),)),
           ],
         )
       ),

@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:prods/core/business/app_cubit.dart';
+import 'package:prods/core/business/app_state.dart';
 import 'package:prods/core/consts/helpers_methods.dart';
+import 'package:prods/core/consts/show_components.dart';
 import 'package:prods/core/consts/sscreens_size.dart';
 import 'package:prods/core/consts/widgets_components.dart';
 import 'package:prods/features/control_panel/business/sections/buys_cubit.dart';
@@ -10,17 +14,47 @@ import 'package:prods/features/control_panel/models/buy_model.dart';
 
 import '../../../../../core/consts/app_colors.dart';
 import '../../../../../core/consts/app_images.dart';
+import '../../../../../core/services/services_locator.dart';
 import '../../../business/control_panel_cubit.dart';
 
-class BuysPage extends StatelessWidget {
+class BuysPage extends StatefulWidget {
   const BuysPage({super.key});
 
   @override
-  Widget build(BuildContext pageContext) {
-    BuysCubit buysCubit = BuysCubit.get(pageContext);
-    final ScrollController scrollInfoHorizontalController = ScrollController();
+  State<BuysPage> createState() => _BuysPageState();
+}
 
-    buysCubit.getAllBuys();    // cubit.changeSortBuyTypeSelected(SortBuyType.FROM_NEWEST_TO_OLDERS, controller.text);
+class _BuysPageState extends State<BuysPage> {
+
+  late BuysCubit buysCubit;
+  late AppCubit appCubit;
+  @override
+    void initState() {
+      super.initState();
+      buysCubit = BuysCubit.get(context);
+      appCubit = AppCubit.get(context);
+      buysCubit.getAllBuys();   // cubit.changeSortBuyTypeSelected(SortBuyType.FROM_NEWEST_TO_OLDERS, controller.text);
+
+      appCubit.goToAppStateInitialState();
+      appCubit.appActions.setTemporaryTimeFrom(Timestamp.fromDate(
+        DateTime(
+          DateTime.now().year,
+          DateTime.now().month,
+          DateTime.now().day,
+        )
+      ));
+      appCubit.appActions.setTemporaryTimeTo(Timestamp.fromDate(
+          DateTime(
+            DateTime.now().year,
+            DateTime.now().month,
+            DateTime.now().day,
+          )
+      ));
+  }
+
+  @override
+  Widget build(BuildContext pageContext) {
+    final ScrollController scrollInfoHorizontalController = ScrollController();
 
     return SizedBox(
         width: double.infinity,
@@ -82,17 +116,29 @@ class BuysPage extends StatelessWidget {
                           },
                         ),
                         const SizedBox(width: 10,),
-                        getAppButton(
+                        BlocBuilder<AppCubit, AppState>(
+                          buildWhen: (previous, current) => current is ClickOnSaveFilterOptionState,
+                          builder: (context, state) {
+                            Color color = Colors.white;
+                            if(state is ClickOnSaveFilterOptionState){
+                              color = AppColors.appLightBlueColor;
+                            }
+                            return getAppButton(
                             icon: Icons.date_range,
-                            color: Colors.white,
+                            color: color,
                             textColor: Colors.black,
                             text: MediaQuery.sizeOf(pageContext).width >
                                 ScreensSizes.smallScreen
-                                ? "فلترة بالوقت"
+                                ? "تصفية بالتاريخ"
                                 : "",
                             onClick: () {
-
-                            }),
+                              sl<AppDialogs>().showFilterByTime(pageContext, appCubit.appActions.getTemporaryTimeFrom(), appCubit.appActions.getTemporaryTimeFrom(), (){
+                                buysCubit.getAllBuys(from: appCubit.appActions.getTemporaryTimeFrom(), to: appCubit.appActions.getTemporaryTimeTo());
+                                appCubit.clickOnSaveFilterOption();
+                              });
+                            });
+  },
+),
                         const SizedBox(width: 10,),
                         getAppButton(
                             icon: Icons.print,
@@ -111,8 +157,7 @@ class BuysPage extends StatelessWidget {
               ),
               Expanded(
                 child: BlocBuilder<BuysCubit, ControlPanelState>(
-                  buildWhen: (previous, current) =>
-                  current is GetAllBuysState,
+                  buildWhen: (previous, current) => current is GetAllBuysState,
                   builder: (context, state) {
                     if (state is GetAllBuysState) {
                       if (!state.isLoaded) {
