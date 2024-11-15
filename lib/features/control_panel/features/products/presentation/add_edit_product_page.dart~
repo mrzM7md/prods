@@ -13,29 +13,50 @@ import 'package:prods/features/control_panel/features/products/presentation/widg
 import 'package:prods/features/control_panel/models/category_model.dart';
 import 'package:prods/features/control_panel/models/product_model.dart';
 
-class AddEditProductPage extends StatelessWidget {
+class AddEditProductPage extends StatefulWidget {
   const AddEditProductPage({super.key, required this.productId});
 
   final String? productId;
+
+  @override
+  State<AddEditProductPage> createState() => _AddEditProductPageState();
+}
+
+class _AddEditProductPageState extends State<AddEditProductPage> {
+  late final ProductsCubit _cubit = BlocProvider.of<ProductsCubit>(context);
+  late final TextEditingController _nameController;
+  late final TextEditingController _priceController;
+  late final TextEditingController _remainedQuantityController;
+  late final TextEditingController _boughtQuantityController;
+  late final ScrollController _scrollCategoryController;
+  late final GlobalKey<FormState> _formKey;
+  late final StringBuffer _titleWord;
+  late String? _id;
+  late final Timestamp? _createdAt;
+
+  @override
+    void initState() {
+    _nameController = TextEditingController();
+    _priceController = TextEditingController();
+    _remainedQuantityController = TextEditingController();
+    _boughtQuantityController = TextEditingController();
+    _scrollCategoryController = ScrollController();
+    _formKey = GlobalKey<FormState>();
+    _titleWord = StringBuffer("إضافة منتج جديد");
+
+    CategoriesCubit.get(context).getAllCategories();
+
+    if (widget.productId != "-1") {
+      _cubit.getProductDetailById(widget.productId!);
+    }else{
+      _cubit.productsActions.clearItemFromSelectedCategoriesForProductAddingFilter();
+    }
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext mainContext) {
-    final ProductsCubit cubit = BlocProvider.of<ProductsCubit>(mainContext);
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController priceController = TextEditingController();
-    final TextEditingController remainedQuantityController = TextEditingController();
-    final TextEditingController boughtQuantityController = TextEditingController();
-    final ScrollController scrollCategoryController = ScrollController();
-    final formKey = GlobalKey<FormState>();
-    final StringBuffer titleWord = StringBuffer("إضافة منتج جديد");
-    String? id;
-    late final Timestamp createdAt;
-
-    if (productId != "-1") {
-      cubit.getProductDetailById(productId!);
-    }else{
-      cubit.productsActions.clearItemFromSelectedCategoriesForProductAddingFilter();
-    }
-    CategoriesCubit.get(mainContext).getAllCategories();
 
     return Scaffold(
        body: SafeArea(
@@ -52,15 +73,15 @@ class AddEditProductPage extends StatelessWidget {
 
                  if(mainState is GetProductDetailState && mainState.isLoaded) {
                    if(mainState.isSuccess){
-                     id = mainState.productModel!.id;
-                     cubit.setCategoriesForProductEditing(mainState.productModel!.categoryIds.map((e) => e.toString()).toList());
-                     nameController.text = mainState.productModel!.name;
-                     priceController.text = mainState.productModel!.price.toString();
-                     remainedQuantityController.text = mainState.productModel!.remainedQuantity.toString();
-                     boughtQuantityController.text = mainState.productModel!.boughtQuantity.toString();
-                     createdAt = mainState.productModel!.createdAt;
-                     titleWord.clear();
-                     titleWord.write("تعديل المنتج ''${mainState.productModel!.name}''");
+                     _id = mainState.productModel!.id;
+                     _cubit.setCategoriesForProductEditing(mainState.productModel!.categoryIds.map((e) => e.toString()).toList());
+                     _nameController.text = mainState.productModel!.name;
+                     _priceController.text = mainState.productModel!.price.toString();
+                     _remainedQuantityController.text = mainState.productModel!.remainedQuantity.toString();
+                     _boughtQuantityController.text = mainState.productModel!.boughtQuantity.toString();
+                     _createdAt ??= mainState.productModel!.createdAt;
+                     _titleWord.clear();
+                     _titleWord.write("تعديل المنتج ''${mainState.productModel!.name}''");
                    }
                  }
 
@@ -70,7 +91,7 @@ class AddEditProductPage extends StatelessWidget {
                  child: SizedBox(
                    width: double.infinity,
                    child: Form(
-                     key: formKey,
+                     key: _formKey,
                      child: Column(
                        crossAxisAlignment: CrossAxisAlignment.start,
                        textDirection: TextDirection.rtl,
@@ -82,7 +103,7 @@ class AddEditProductPage extends StatelessWidget {
                                  onPressed: (){
                                    context.pop();
                                  },icon: const Icon(CupertinoIcons.back)),
-                             Text(titleWord.toString(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),),
+                             Text(_titleWord.toString(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),),
                            ],
                          ),
                          SizedBox(
@@ -96,7 +117,7 @@ class AddEditProductPage extends StatelessWidget {
                                      if(value.isEmpty){
                                        return "اسم المنتج مطلوب";
                                      }
-                               }, controller: nameController, fillColor: Colors.black12, obscureText: false, direction: TextDirection.rtl, suffixIconButton: null),
+                               }, controller: _nameController, fillColor: Colors.black12, obscureText: false, direction: TextDirection.rtl, suffixIconButton: null),
                                const SizedBox(height: 10,),
                                SizedBox(height: 30,
                                  width: double.infinity,
@@ -115,12 +136,12 @@ class AddEditProductPage extends StatelessWidget {
                                          return Scrollbar(
                                            interactive: true,
                                            trackVisibility: true,
-                                           controller: scrollCategoryController,
+                                           controller: _scrollCategoryController,
                                            thickness: 8.0,
                                            child: SizedBox(
                                              height: 30,
                                              child: ListView.separated(
-                                               controller: scrollCategoryController,
+                                               controller: _scrollCategoryController,
                                                separatorBuilder: (context, index) => const SizedBox(width: 5,),
                                                scrollDirection: Axis.horizontal,
                                                itemCount: data.length,
@@ -138,7 +159,7 @@ class AddEditProductPage extends StatelessWidget {
                                                            }
                                                           return FilterOptionButtonItemWidget(
                                                            text: data[index].name, color: Colors.white, bgColor: bgColor,
-                                                           onClick: () => cubit.selectNewCategoryOrUnSelectForProductAdding(data[index].id)
+                                                           onClick: () => _cubit.selectNewCategoryOrUnSelectForProductAdding(data[index].id)
                                                          ,);
                                                            },
                                                        )
@@ -165,9 +186,9 @@ class AddEditProductPage extends StatelessWidget {
                                        text: "سعر المنتج",
                                        onChange: (value){
                                      if (!RegExp(r'^\d*\.?\d*$').hasMatch(value)) {
-                                       priceController.text = value.replaceAll(RegExp(r'[^0-9.]'), '');
-                                       priceController.selection = TextSelection.fromPosition(
-                                         TextPosition(offset: priceController.text.length),
+                                       _priceController.text = value.replaceAll(RegExp(r'[^0-9.]'), '');
+                                       _priceController.selection = TextSelection.fromPosition(
+                                         TextPosition(offset: _priceController.text.length),
                                        );
                                      }
                                    }, validator: (value){
@@ -176,16 +197,16 @@ class AddEditProductPage extends StatelessWidget {
                                          }
                                          return null;
                                        },
-                                   controller: priceController, fillColor: Colors.black12, obscureText: false, direction: TextDirection.ltr, suffixIconButton: null),
+                                   controller: _priceController, fillColor: Colors.black12, obscureText: false, direction: TextDirection.ltr, suffixIconButton: null),
 
                                const SizedBox(height: 10,),
                                getAppTextField(
                                    inputType: TextInputType.number,
                                    text: "الكمية المتبقية", onChange: (value){
                                  if (!RegExp(r'^\d*\.?\d*$').hasMatch(value)) {
-                                   remainedQuantityController.text = value.replaceAll(RegExp(r'[^0-9.]'), '');
-                                   remainedQuantityController.selection = TextSelection.fromPosition(
-                                     TextPosition(offset: remainedQuantityController.text.length),
+                                   _remainedQuantityController.text = value.replaceAll(RegExp(r'[^0-9.]'), '');
+                                   _remainedQuantityController.selection = TextSelection.fromPosition(
+                                     TextPosition(offset: _remainedQuantityController.text.length),
                                    );
                                  }
                                }, validator: (value){
@@ -193,15 +214,15 @@ class AddEditProductPage extends StatelessWidget {
                                        return "الكمية المتبقية يجب أن يكون رقم صحيح";
                                      }
                                      return null;
-                               }, controller: remainedQuantityController, fillColor: Colors.black12, obscureText: false, direction: TextDirection.ltr, suffixIconButton: null),
+                               }, controller: _remainedQuantityController, fillColor: Colors.black12, obscureText: false, direction: TextDirection.ltr, suffixIconButton: null),
                                const SizedBox(height: 10,),
                                getAppTextField(
                                    inputType: TextInputType.number,
                                    text: "الكمية التي تم بيعها", onChange: (value){
                                  if (!RegExp(r'^\d*\.?\d*$').hasMatch(value)) {
-                                   boughtQuantityController.text = value.replaceAll(RegExp(r'[^0-9.]'), '');
-                                   boughtQuantityController.selection = TextSelection.fromPosition(
-                                     TextPosition(offset: boughtQuantityController.text.length),
+                                   _boughtQuantityController.text = value.replaceAll(RegExp(r'[^0-9.]'), '');
+                                   _boughtQuantityController.selection = TextSelection.fromPosition(
+                                     TextPosition(offset: _boughtQuantityController.text.length),
                                    );
                                  }
                                }, validator: (value){
@@ -209,7 +230,7 @@ class AddEditProductPage extends StatelessWidget {
                                    return "الكمية التي تم بيعها يجب أن يكون رقم صحيح";
                                  }
                                  return null;
-                               }, controller: boughtQuantityController, fillColor: Colors.black12, obscureText: false, direction: TextDirection.ltr, suffixIconButton: null),
+                               }, controller: _boughtQuantityController, fillColor: Colors.black12, obscureText: false, direction: TextDirection.ltr, suffixIconButton: null),
                                const SizedBox(height: 10,),
                                                               ],
                                                             ),
@@ -220,18 +241,18 @@ class AddEditProductPage extends StatelessWidget {
                                  if(state is AddEditProductState && ! state.isLoaded){
                                    return getAppProgress();
                                  }
-                                 
+
                                 return getAppButton(color: AppColors.appGreenColor, textColor: Colors.black, text: "حفظ",
                                     onClick: () {
-                                  if(formKey.currentState!.validate()){
-                                    if(id != null){
-                                      cubit.editProduct(
-                                          ProductModel(id: id!, name: nameController.text, price: double.parse(priceController.text), categoryIds: cubit.productsActions.getSelectedCategoriesForProductAdding(), remainedQuantity: double.parse(remainedQuantityController.text), boughtQuantity: double.parse(boughtQuantityController.text), createdAt: createdAt, updatedAt: Timestamp.now())
+                                  if(_formKey.currentState!.validate()){
+                                    if(_id != null){
+                                      _cubit.editProduct(
+                                          ProductModel(id: _id!, name: _nameController.text, price: double.parse(_priceController.text), categoryIds: _cubit.productsActions.getSelectedCategoriesForProductAdding(), remainedQuantity: double.parse(_remainedQuantityController.text), boughtQuantity: double.parse(_boughtQuantityController.text), createdAt: _createdAt!, updatedAt: Timestamp.now())
                                       );
                                     }
                                     else{
-                                      cubit.addNewProduct(
-                                          ProductModel(id: "", name: nameController.text, price: double.parse(priceController.text), categoryIds: cubit.productsActions.getSelectedCategoriesForProductAdding(), remainedQuantity: double.parse(remainedQuantityController.text), boughtQuantity: double.parse(boughtQuantityController.text), createdAt: Timestamp.now(), updatedAt: Timestamp.now())
+                                      _cubit.addNewProduct(
+                                          ProductModel(id: "", name: _nameController.text, price: double.parse(_priceController.text), categoryIds: _cubit.productsActions.getSelectedCategoriesForProductAdding(), remainedQuantity: double.parse(_remainedQuantityController.text), boughtQuantity: double.parse(_boughtQuantityController.text), createdAt: Timestamp.now(), updatedAt: Timestamp.now())
                                       );
                                     }
 
