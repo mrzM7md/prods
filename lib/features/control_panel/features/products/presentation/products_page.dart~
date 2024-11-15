@@ -467,10 +467,6 @@ class _ProductsPageState extends State<ProductsPage> {
                                                       .toString());
                                                 }
 
-                                              else if (! snapshot.hasData) {
-                                                return const Text("[]");
-                                                }
-
                                                 return const Text("حدث خطأ ما");
                                               },
                                             )),
