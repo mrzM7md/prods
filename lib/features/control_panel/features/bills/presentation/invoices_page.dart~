@@ -11,15 +11,28 @@ import 'package:prods/features/control_panel/models/invoice_model.dart';
 import '../../../../../core/consts/app_colors.dart';
 import '../../../business/control_panel_cubit.dart';
 
-class InvoicesPage extends StatelessWidget {
+class InvoicesPage extends StatefulWidget {
   const InvoicesPage({super.key});
 
   @override
-  Widget build(BuildContext pageContext) {
-    final ScrollController scrollInfoHorizontalController = ScrollController();
+  State<InvoicesPage> createState() => _InvoicesPageState();
+}
 
-    final InvoiceCubit invoiceCubit = InvoiceCubit.get(pageContext)
-      ..getInvoiceToday();
+class _InvoicesPageState extends State<InvoicesPage> {
+
+  late final ScrollController scrollInfoHorizontalController;
+  late final InvoiceCubit invoiceCubit;
+
+
+  @override
+  void initState() {
+    scrollInfoHorizontalController = ScrollController();
+    invoiceCubit = InvoiceCubit.get(context)..getInvoiceToday();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext pageContext) {
     return SizedBox(
         width: double.infinity,
         child: Column(
@@ -263,19 +276,19 @@ class InvoicesPage extends StatelessWidget {
                     switch (state.type) {
                       case InvoiceFilterType.TODAY:
                         word.clear();
-                        word.write("المحموع لليوم");
+                        word.write("المحموع");
                         break;
                       case InvoiceFilterType.ALLDAYS:
                         word.clear();
-                        word.write("المحموع لجميع الأيام");
+                        word.write("المحموع");
                         break;
                       case InvoiceFilterType.LAST_2_DAYS:
                         word.clear();
-                        word.write("المحموع لآخر يومين ");
+                        word.write("المحموع ");
                         break;
                       default:
                         word.clear();
-                        word.write("المحموع لآخر ثلاثة أيام ");
+                        word.write("المحموع ");
                         break;
                     }
                     return Align(

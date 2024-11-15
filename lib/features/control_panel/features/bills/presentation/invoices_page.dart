@@ -276,19 +276,19 @@ class _InvoicesPageState extends State<InvoicesPage> {
                     switch (state.type) {
                       case InvoiceFilterType.TODAY:
                         word.clear();
-                        word.write("المحموع لليوم");
+                        word.write("المحموع");
                         break;
                       case InvoiceFilterType.ALLDAYS:
                         word.clear();
-                        word.write("المحموع لجميع الأيام");
+                        word.write("المحموع");
                         break;
                       case InvoiceFilterType.LAST_2_DAYS:
                         word.clear();
-                        word.write("المحموع لآخر يومين ");
+                        word.write("المحموع");
                         break;
                       default:
                         word.clear();
-                        word.write("المحموع لآخر ثلاثة أيام ");
+                        word.write("المحموع ");
                         break;
                     }
                     return Align(
