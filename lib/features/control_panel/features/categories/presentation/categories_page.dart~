@@ -185,7 +185,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                                                       height: 20,
                                                       child: CircularProgressIndicator());;
                                                   } else if (snapshot.hasData) {
-                                                    return Text(formatNumber(snapshot.data));
+                                                  return Text(formatNumber(snapshot.data));
                                                   }
                                                   return const Text("حدث خطأ ما");
                                                   },                                              )

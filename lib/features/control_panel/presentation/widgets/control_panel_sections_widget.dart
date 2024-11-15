@@ -17,18 +17,37 @@ import 'package:url_launcher/url_launcher.dart';
 // the url_launcher package.
 import 'drawer_list_tile_widget.dart';
 
-class ControlPanelSectionsWidget extends StatelessWidget {
+class ControlPanelSectionsWidget extends StatefulWidget {
   const ControlPanelSectionsWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    ControlPanelCubit cubit = ControlPanelCubit.get(context);
-    if(cubit.getConnectivityState() == ConnectivityState.ONLINE) {
-      cubit.goOnline();
+  State<ControlPanelSectionsWidget> createState() => _ControlPanelSectionsWidgetState();
+}
+
+class _ControlPanelSectionsWidgetState extends State<ControlPanelSectionsWidget> {
+
+  late final ControlPanelCubit _cubit;
+  late Future<String> storeName;
+  @override
+  void initState() {
+    _cubit = ControlPanelCubit.get(context);
+
+    if(_cubit.getConnectivityState() == ConnectivityState.ONLINE) {
+      _cubit.goOnline();
     }
     else{
-      cubit.goOffline();
+      _cubit.goOffline();
     }
+
+    storeName = _cubit.appActions.getStoreName();
+
+    super.initState();
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -38,7 +57,7 @@ class ControlPanelSectionsWidget extends StatelessWidget {
               builder: (context) => Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: IconButton(onPressed: (){
-                  cubit.changeAppSectionVisibility();
+                  _cubit.changeAppSectionVisibility();
                 }, icon: const Icon(Icons.close)),
               ), fallback: (context) => Container(),) ,
           Image.asset(
@@ -48,7 +67,7 @@ class ControlPanelSectionsWidget extends StatelessWidget {
           ),
           const SizedBox(height: 10,),
           FutureBuilder(
-            future: cubit.appActions.getStoreName(),
+            future: storeName,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const SizedBox(
@@ -78,11 +97,11 @@ class ControlPanelSectionsWidget extends StatelessWidget {
                 buildWhen: (previous, current) => current is ChangeConnectivityState,
                 builder: (context, state) {
                   Color color = Colors.black54;
-                  if(cubit.getConnectivityState() == ConnectivityState.ONLINE) {
+                  if(_cubit.getConnectivityState() == ConnectivityState.ONLINE) {
                     color = AppColors.appGreenColor;
                   }
                   return IconButton(onPressed: (){
-                    cubit.changeConnectivityState(ConnectivityState.ONLINE);
+                    _cubit.changeConnectivityState(ConnectivityState.ONLINE);
               }, icon: const Icon(Icons.wifi), color: color, hoverColor: AppColors.appLightGreenColor);
         },
       ),
@@ -90,11 +109,11 @@ class ControlPanelSectionsWidget extends StatelessWidget {
                 buildWhen: (previous, current) => current is ChangeConnectivityState,
                 builder: (context, state) {
                   Color color = Colors.black54;
-                  if(cubit.getConnectivityState() == ConnectivityState.OFFLINE) {
+                  if(_cubit.getConnectivityState() == ConnectivityState.OFFLINE) {
                     color = AppColors.appGreenColor;
                   }
                   return IconButton(onPressed: (){
-                    cubit.changeConnectivityState(ConnectivityState.OFFLINE);
+                    _cubit.changeConnectivityState(ConnectivityState.OFFLINE);
                     }, icon: const Icon(Icons.wifi_off), color: color, hoverColor: AppColors.appLightGreenColor);
                 },
               ),
@@ -111,10 +130,10 @@ class ControlPanelSectionsWidget extends StatelessWidget {
                 title: "المشتريات",
                 icon: AppImages.buys,
                 press: () {
-                  cubit.setControlPanelSections(ControlPanelSections.BUYS);
-                  hiddenSectionsBoardOnSmallScreens(context, cubit);
+                  _cubit.setControlPanelSections(ControlPanelSections.BUYS);
+                  hiddenSectionsBoardOnSmallScreens(context, _cubit);
                 },
-                bgColor: cubit.getControlPanelSection() ==
+                bgColor: _cubit.getControlPanelSection() ==
                     ControlPanelSections.BUYS
                     ? AppColors.appLightBlueColor
                     : null,
@@ -132,11 +151,11 @@ class ControlPanelSectionsWidget extends StatelessWidget {
                 title: "الأصناف",
                 icon: AppImages.categories,
                 press: () {
-                  cubit.setControlPanelSections(
+                  _cubit.setControlPanelSections(
                       ControlPanelSections.CATEGORIES);
-                  hiddenSectionsBoardOnSmallScreens(context, cubit);
+                  hiddenSectionsBoardOnSmallScreens(context, _cubit);
                 },
-                bgColor: cubit.getControlPanelSection() ==
+                bgColor: _cubit.getControlPanelSection() ==
                     ControlPanelSections.CATEGORIES
                     ? AppColors.appLightBlueColor
                     : null,
@@ -154,10 +173,10 @@ class ControlPanelSectionsWidget extends StatelessWidget {
                 title: "المبيعات",
                 icon: AppImages.products,
                 press: () {
-                  cubit.setControlPanelSections(ControlPanelSections.PRODUCTS);
-                  hiddenSectionsBoardOnSmallScreens(context, cubit);
+                  _cubit.setControlPanelSections(ControlPanelSections.PRODUCTS);
+                  hiddenSectionsBoardOnSmallScreens(context, _cubit);
                 },
-                bgColor: cubit.getControlPanelSection() ==
+                bgColor: _cubit.getControlPanelSection() ==
                     ControlPanelSections.PRODUCTS
                     ? AppColors.appLightBlueColor
                     : null,
@@ -173,10 +192,10 @@ class ControlPanelSectionsWidget extends StatelessWidget {
                 title: "السلة",
                 icon: AppImages.addToCart,
                 press: () {
-                  cubit.setControlPanelSections(ControlPanelSections.CART);
-                  hiddenSectionsBoardOnSmallScreens(context, cubit);
+                  _cubit.setControlPanelSections(ControlPanelSections.CART);
+                  hiddenSectionsBoardOnSmallScreens(context, _cubit);
                 },
-                bgColor: cubit.getControlPanelSection() ==
+                bgColor: _cubit.getControlPanelSection() ==
                     ControlPanelSections.CART
                     ? AppColors.appLightBlueColor
                     : null,
@@ -194,11 +213,11 @@ class ControlPanelSectionsWidget extends StatelessWidget {
                 title: "الفواتير",
                 icon: AppImages.bills,
                 press: () {
-                  cubit.setControlPanelSections(
+                  _cubit.setControlPanelSections(
                       ControlPanelSections.BILLS);
-                  hiddenSectionsBoardOnSmallScreens(context, cubit);
+                  hiddenSectionsBoardOnSmallScreens(context, _cubit);
                 },
-                bgColor: cubit.getControlPanelSection() ==
+                bgColor: _cubit.getControlPanelSection() ==
                     ControlPanelSections.BILLS
                     ? AppColors.appLightBlueColor
                     : null,
@@ -239,7 +258,6 @@ class ControlPanelSectionsWidget extends StatelessWidget {
     }
   }
 
-
   void openWhatsApp() async {
     String phoneNumber = "9670774520862"; // استبدل برقم الهاتف
     String message = "أحتاج إلى مساعدة 'البسيط'"; // استبدل بالنص الذي تريد إرساله
@@ -251,5 +269,4 @@ class ControlPanelSectionsWidget extends StatelessWidget {
       throw 'Could not launch $url';
     }
   }
-
 }

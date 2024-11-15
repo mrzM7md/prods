@@ -16,12 +16,26 @@ import 'package:prods/features/control_panel/features/statistics/presentation/st
 
 import '../../../core/services/services_locator.dart';
 
-class ControlPanelPage extends StatelessWidget {
+class ControlPanelPage extends StatefulWidget {
   const ControlPanelPage({super.key});
 
   @override
+  State<ControlPanelPage> createState() => _ControlPanelPageState();
+}
+
+
+class _ControlPanelPageState extends State<ControlPanelPage> {
+
+  late final ControlPanelCubit cubit;
+
+  @override
+  void initState() {
+    cubit = ControlPanelCubit.get(context);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    ControlPanelCubit cubit = ControlPanelCubit.get(context);
     return Directionality(
       textDirection: TextDirection.rtl,
       child: SafeArea(child: Scaffold(
