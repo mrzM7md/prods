@@ -12,23 +12,40 @@ import 'package:prods/features/control_panel/models/category_model.dart';
 
 import '../../../../../core/consts/widgets_components.dart';
 
-class CategoriesPage extends StatelessWidget {
+class CategoriesPage extends StatefulWidget {
   const CategoriesPage({super.key});
 
   @override
+  State<CategoriesPage> createState() => _CategoriesPageState();
+}
+
+class _CategoriesPageState extends State<CategoriesPage> {
+
+  late CategoriesCubit _cubit;
+  late GlobalKey<FormState> _formKey;
+  late TextEditingController _controller;
+  late final ScrollController _scrollInfoHorizontalController;
+
+  @override
+  void initState() {
+    _cubit = CategoriesCubit.get(context);
+    _formKey = GlobalKey<FormState>();
+    _controller = _controller = TextEditingController();
+    _scrollInfoHorizontalController = ScrollController();
+
+    _cubit.getAllCategories();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext pageContext) {
-    CategoriesCubit cubit = CategoriesCubit.get(pageContext);
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    TextEditingController controller = TextEditingController();
-    final ScrollController scrollInfoHorizontalController = ScrollController();
-    cubit.getAllCategories();
 
   return SizedBox(
       width: double.infinity,
       child: Column(
         // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          AddEditCategoryWidget(context: pageContext, controller: controller, formKey: formKey, message: "", bkgColor: Colors.white, textColor: Colors.black),
+          AddEditCategoryWidget(context: pageContext, controller: _controller, formKey: _formKey, message: "", bkgColor: Colors.white, textColor: Colors.black),
             BlocBuilder<CategoriesCubit, ControlPanelState>(
               buildWhen: (previous, current) => current is ChangeAddNewOrEditCategoryBoxState, builder: (context, state) {
               if(!(state is ! ChangeAddNewOrEditCategoryBoxState || ! state.isClickedOnAddNewCategory)) {
@@ -52,7 +69,7 @@ class CategoriesPage extends StatelessWidget {
                           textColor: Colors.black,
                           text: MediaQuery.sizeOf(context).width > ScreensSizes.smallScreen ? "إضافة صنف جديد" : "",
                           onClick: () {
-                            cubit.changeClickedOnAddNewOrEditCategory();
+                            _cubit.changeClickedOnAddNewOrEditCategory();
                           }),
                     ],
                   ),
@@ -75,7 +92,7 @@ class CategoriesPage extends StatelessWidget {
                           textColor: Colors.redAccent,
                           icon: Icons.refresh,
                           text: state.message, onClick: () {
-                            cubit.getAllCategories();
+                            _cubit.getAllCategories();
                           });
                     }
 
@@ -87,10 +104,10 @@ class CategoriesPage extends StatelessWidget {
                     return Scrollbar(
                       interactive: true,
                       trackVisibility: true,
-                      controller: scrollInfoHorizontalController,
+                      controller: _scrollInfoHorizontalController,
                       thumbVisibility: true,
                       child: SingleChildScrollView(
-                        controller: scrollInfoHorizontalController,
+                        controller: _scrollInfoHorizontalController,
                           scrollDirection: Axis.horizontal,
                           child: SingleChildScrollView(
                             scrollDirection: Axis.vertical,
@@ -118,7 +135,7 @@ class CategoriesPage extends StatelessWidget {
                                             MaterialButton(elevation: 0,
                                               color: AppColors.appGreenColor,
                                               onPressed: () {
-                                                cubit.changeClickedOnAddNewOrEditCategory(category: data[index], index: index);
+                                                _cubit.changeClickedOnAddNewOrEditCategory(category: data[index], index: index);
                                               },
                                               child: Image.asset(AppImages.edit),),
                                             const SizedBox(width: 10,),
@@ -147,7 +164,7 @@ class CategoriesPage extends StatelessWidget {
                                                     color: AppColors.appRedColor,
                                                     onPressed: () {
                                                       showDeleteConfirmationMessage(context, Colors.white, "حذف '${data[index].name}'", "هل أنت متأكد، لن تتمكن من استرجاعه بمجرد الحذف", (){
-                                                        cubit.deleteCategory(index, data[index]);
+                                                        _cubit.deleteCategory(index, data[index]);
                                                       });
                                                     },
                                                     child: Image.asset(AppImages.delete),);
@@ -160,7 +177,7 @@ class CategoriesPage extends StatelessWidget {
                                         DataCell(Align(
                                             alignment: Alignment.center,
                                             child: FutureBuilder(
-                                                future: cubit.categoriesActions.countOfProductToSpecificCategory(data[index].id),
+                                                future: _cubit.categoriesActions.countOfProductToSpecificCategory(data[index].id),
                                                 builder: (context, snapshot) {
                                                   if (snapshot.connectionState == ConnectionState.waiting) {
                                                   return const SizedBox(
