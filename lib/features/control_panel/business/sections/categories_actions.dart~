@@ -64,7 +64,7 @@ class CategoriesActions {
     List<String> catNames = [];
     for(var id in catIds){
       var data = (await (await getCategoriesReference()).doc(id).get()).data();
-      if(data != null){
+      if(data == null){
         var name = await ( data as Map)["name"];
         catNames.add(name);
       }

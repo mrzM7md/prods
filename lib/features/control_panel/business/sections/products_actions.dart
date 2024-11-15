@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:prods/core/enums/enums.dart';
-import 'package:prods/features/control_panel/models/category_model.dart';
 import 'package:prods/features/control_panel/models/product_model.dart';
 
 class ProductsActions {
