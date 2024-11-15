@@ -9,6 +9,7 @@ import 'package:prods/features/control_panel/business/sections/invoice_cubit.dar
 import 'package:prods/features/control_panel/features/products/presentation/widgets/filter_option_button_Item_widget.dart';
 import 'package:prods/features/control_panel/models/invoice_model.dart';
 import '../../../../../core/consts/app_colors.dart';
+import '../../../../../core/services/services_locator.dart';
 import '../../../business/control_panel_cubit.dart';
 
 class InvoicesPage extends StatefulWidget {
@@ -226,12 +227,13 @@ class _InvoicesPageState extends State<InvoicesPage> {
                                                 pageContext: pageContext
                                               );
                                             } else {
-                                              showCustomToast(
+                                              sl<ShowCustomMessage>().showCustomToast(
                                                   context: pageContext,
                                                   message: state.message,
                                                   bkgColor:
                                                       AppColors.appRedColor,
-                                                  textColor: Colors.black);
+                                                  textColor: Colors.black,
+                                              );
                                             }
                                           }
                                         },

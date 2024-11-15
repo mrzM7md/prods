@@ -141,7 +141,7 @@ class ShowCustomMessage {
     Overlay.of(context).insert(overlayEntry);
 
     Future.delayed(const Duration(seconds: 3), () {
-      if(!isRemoved){
+      if(isRemoved){
         overlayEntry.remove();
       }
     });

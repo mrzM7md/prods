@@ -32,7 +32,7 @@ class _AddEditProductPageState extends State<AddEditProductPage> {
   late final GlobalKey<FormState> _formKey;
   late final StringBuffer _titleWord;
   late String? _id;
-  late final Timestamp? _createdAt;
+  late Timestamp? _createdAt;
 
   @override
     void initState() {
@@ -79,7 +79,7 @@ class _AddEditProductPageState extends State<AddEditProductPage> {
                      _priceController.text = mainState.productModel!.price.toString();
                      _remainedQuantityController.text = mainState.productModel!.remainedQuantity.toString();
                      _boughtQuantityController.text = mainState.productModel!.boughtQuantity.toString();
-                     _createdAt ??= mainState.productModel!.createdAt;
+                     _createdAt = mainState.productModel!.createdAt;
                      _titleWord.clear();
                      _titleWord.write("تعديل المنتج ''${mainState.productModel!.name}''");
                    }

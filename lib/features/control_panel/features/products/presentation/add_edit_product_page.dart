@@ -13,6 +13,8 @@ import 'package:prods/features/control_panel/features/products/presentation/widg
 import 'package:prods/features/control_panel/models/category_model.dart';
 import 'package:prods/features/control_panel/models/product_model.dart';
 
+import '../../../../../core/services/services_locator.dart';
+
 class AddEditProductPage extends StatefulWidget {
   const AddEditProductPage({super.key, required this.productId});
 
@@ -262,9 +264,9 @@ class _AddEditProductPageState extends State<AddEditProductPage> {
                                  listener: (context, state) {
                                    if(state is AddEditProductState && state.isLoaded){
                                      if(state.isSuccess){
-                                       showCustomToast(context: context, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.black);
+                                       sl<ShowCustomMessage>().showCustomToast(context: context, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.black);
                                      }else{
-                                       showCustomToast(context: context, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black);
+                                       sl<ShowCustomMessage>().showCustomToast(context: context, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black);
                                      }
                                    }
                                  },

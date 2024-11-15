@@ -7,6 +7,8 @@ import 'package:prods/features/control_panel/business/control_panel_cubit.dart';
 import 'package:prods/features/control_panel/business/sections/categories_cubit.dart';
 import 'package:prods/features/control_panel/models/category_model.dart';
 
+import '../../../../../../core/services/services_locator.dart';
+
 class AddEditCategoryWidget extends StatelessWidget {
   final BuildContext context;
   final String message;
@@ -121,13 +123,14 @@ class AddEditCategoryWidget extends StatelessWidget {
 
                     );
                   },
+
                   listener: (BuildContext context, ControlPanelState state) {
                   if(state is AddEditCategoryState) {
                     if(state.isSuccess) {
-                      showCustomToast(context: context, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.black,);
+                      sl<ShowCustomMessage>().showCustomToast(context: context, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.black,);
                       controller.text = "";
                     }else{
-                      showCustomToast(context: context, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black,);
+                      sl<ShowCustomMessage>().showCustomToast(context: context, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black,);
                     }
                   }
                 },

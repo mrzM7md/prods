@@ -11,6 +11,7 @@ import 'package:prods/features/control_panel/features/categories/presentation/wi
 import 'package:prods/features/control_panel/models/category_model.dart';
 
 import '../../../../../core/consts/widgets_components.dart';
+import '../../../../../core/services/services_locator.dart';
 
 class CategoriesPage extends StatefulWidget {
   const CategoriesPage({super.key});
@@ -145,10 +146,10 @@ class _CategoriesPageState extends State<CategoriesPage> {
                                               listener: (context, state) {
                                                 if(state is DeleteCategoryState && state.isLoaded){
                                                   if(state.isSuccess){
-                                                    showCustomToast(context: context, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.black);
+                                                    sl<ShowCustomMessage>().showCustomToast(context: context, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.black);
                                                   }
                                                   else{
-                                                    showCustomToast(context: context, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black);
+                                                    sl<ShowCustomMessage>().showCustomToast(context: context, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black);
                                                   }
                                                 }
                                               },
@@ -283,7 +284,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                       });
                 }, listener: (BuildContext context, ControlPanelState state) {
                 if(state is AddEditCategoryState) {
-                  showCustomToast(context: context, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black,);
+                  sl<ShowCustomMessage>().showCustomToast(context: context, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black,);
                 }
               },
               )

@@ -13,6 +13,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/consts/app_colors.dart';
 import '../../../../../core/consts/app_images.dart';
+import '../../../../../core/services/services_locator.dart';
 import '../../../business/control_panel_cubit.dart';
 import '../../../business/sections/products_cubit.dart';
 import '../../../models/product_model.dart';
@@ -332,9 +333,9 @@ class _ProductsPageState extends State<ProductsPage> {
                                               listener: (context, state) {
                                                 if (state is AddToCartState) {
                                                   if(state.isSuccess) {
-                                                    showCustomToast(context: context, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.black54);
+                                                    sl<ShowCustomMessage>().showCustomToast(context: context, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.black54);
                                                   }else{
-                                                    showCustomToast(context: context, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black54);
+                                                    sl<ShowCustomMessage>().showCustomToast(context: context, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black54);
                                                   }
                                                 }
                                           },
@@ -347,7 +348,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                               // color: Colors.white,
                                               onPressed: () {
                                                 if(data[index].remainedQuantity < 1.0){
-                                                  showCustomToast(context: pageContext, message: "نفدت كمية هذا المنتج", bkgColor: AppColors.appRedColor, textColor: Colors.black);
+                                                  sl<ShowCustomMessage>().showCustomToast(context: pageContext, message: "نفدت كمية هذا المنتج", bkgColor: AppColors.appRedColor, textColor: Colors.black);
                                                 } else{
                                                   _cartCubit.addToCart(data[index]);
                                                 }
@@ -367,7 +368,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                               color: AppColors.appGreenColor,
                                               onPressed: () {
                                                 if(_cartCubit.cartActions.idThereProductInCart(data[index].id)) {
-                                                  showCustomToast(context: context, message: "لا يمكنك تعديل منتج مضاف للسلة", bkgColor: AppColors.appRedColor, textColor: Colors.black54);
+                                                  sl<ShowCustomMessage>().showCustomToast(context: context, message: "لا يمكنك تعديل منتج مضاف للسلة", bkgColor: AppColors.appRedColor, textColor: Colors.black54);
                                                 }
                                                 else{
                                                   pageContext.goNamed(
@@ -394,7 +395,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                               listener: (context, state) {
                                                 if (state is DeleteProductState && state.isLoaded) {
                                                   if (state.isSuccess) {
-                                                    showCustomToast(
+                                                    sl<ShowCustomMessage>().showCustomToast(
                                                         context: context,
                                                         message: state.message,
                                                         bkgColor: AppColors
@@ -402,7 +403,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                                         textColor:
                                                             Colors.black);
                                                   } else {
-                                                    showCustomToast(
+                                                    sl<ShowCustomMessage>().showCustomToast(
                                                         context: context,
                                                         message: state.message,
                                                         bkgColor: AppColors
@@ -422,7 +423,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                                   color: AppColors.appRedColor,
                                                   onPressed: () {
                                                     if(_cartCubit.cartActions.idThereProductInCart(data[index].id)) {
-                                                      showCustomToast(context: context, message: "لا يمكنك حذف منتج مضاف للسلة", bkgColor: AppColors.appRedColor, textColor: Colors.black54);
+                                                      sl<ShowCustomMessage>().showCustomToast(context: context, message: "لا يمكنك حذف منتج مضاف للسلة", bkgColor: AppColors.appRedColor, textColor: Colors.black54);
                                                     }
                                                     else{
                                                       showDeleteConfirmationMessage(

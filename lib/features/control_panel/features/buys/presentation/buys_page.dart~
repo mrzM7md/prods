@@ -148,10 +148,10 @@ class _BuysPageState extends State<BuysPage> {
                           listener: (context, state) {
                             if(state is AddEditBuyState){
                               if (state.isSuccess) {
-                                showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.white);
+                                sl<ShowCustomMessage>().showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.white);
                               }
                               else{
-                                showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black);
+                                sl<ShowCustomMessage>().showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black);
                               }
                             }
                           },
@@ -251,7 +251,7 @@ class _BuysPageState extends State<BuysPage> {
                                         margin: const EdgeInsetsDirectional.only(top: 10),
                                         width: MediaQuery.of(pageContext).size.width,
                                         padding: const EdgeInsetsDirectional.all(10),
-                                        color: AppColors.appGreenColor,
+                                        color: AppColors.appLightGreenColor,
                                         child: BlocBuilder<AppCubit, AppState>(
                                         buildWhen: (previous, current) => current is ClickOnSaveFilterOptionState,
                                         builder: (context, state) {

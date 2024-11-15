@@ -11,8 +11,6 @@ class CategoryModel extends Equatable {
   List<Object?> get props => [id, name, createdAt, updatedAt];
 
   factory CategoryModel.fromDocument(Map<String, dynamic> document){
-    print("ID: ${document["id"]}");
-    print("Name: ${document["name"]}");
     return CategoryModel(id: document['id'], name: document['name'], createdAt: document['createdAt'], updatedAt: document['updatedAt']);
   }
 

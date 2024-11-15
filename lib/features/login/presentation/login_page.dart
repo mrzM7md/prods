@@ -10,6 +10,8 @@ import 'package:prods/features/login/business/login_cubit.dart';
 import 'package:prods/features/login/models/login_model.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/services/services_locator.dart';
+
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
@@ -121,10 +123,10 @@ class LoginPage extends StatelessWidget {
                           listener: (context, state) {
                             if(state is LoginUserState){
                               if(!state.isSuccessful) {
-                                showCustomToast(message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black, context: pageContext);
+                                sl<ShowCustomMessage>().showCustomToast(message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black, context: pageContext);
                               }
                               else{
-                                showCustomToast(message: state.message, bkgColor: AppColors.appLightGreenColor, textColor: Colors.black, context: pageContext);
+                                sl<ShowCustomMessage>().showCustomToast(message: state.message, bkgColor: AppColors.appLightGreenColor, textColor: Colors.black, context: pageContext);
                                 pageContext.goNamed(AppRoutes.controlPanelRouter);
                               }
                             }

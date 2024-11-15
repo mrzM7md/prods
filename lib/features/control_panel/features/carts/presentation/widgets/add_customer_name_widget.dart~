@@ -7,7 +7,7 @@ import 'package:prods/features/control_panel/business/control_panel_cubit.dart';
 import 'package:prods/features/control_panel/business/sections/categories_cubit.dart';
 import 'package:prods/features/control_panel/models/category_model.dart';
 
-class AddEditCategoryWidget extends StatelessWidget {
+class AddCustomerNameWidget extends StatelessWidget {
   final BuildContext context;
   final String message;
   final Color bkgColor;
@@ -15,7 +15,7 @@ class AddEditCategoryWidget extends StatelessWidget {
   final TextEditingController controller;
   final GlobalKey<FormState> formKey;
 
-  const AddEditCategoryWidget({super.key,
+  const AddCustomerNameWidget({super.key,
         required this.context,
         required this.message,
         required this.bkgColor,
@@ -72,16 +72,16 @@ class AddEditCategoryWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 10,),
                 Text(
-                  category == null ? "إضافة صنف جديد" : "تعديل '${category!.name}'",
+                  category == null ? "أدخل اسم الزبون" : "تعديل '${category!.name}'",
                   style: const TextStyle(fontSize: 18 ,fontWeight: FontWeight.bold,),),
                 Form(
                   key: formKey,
                   child: getAppTextField(
-                    text: "اسم الصنف",
+                    text: "اسم الزبون",
                     onChange: (value) {},
                     validator: (value) {
                       if(value.toString().isEmpty || value == null){
-                        return "يجب إدخال قيمة";
+                        return "يجب إدخال اسم الزبون هنا";
                       }
                       return null;
                     },
@@ -103,7 +103,7 @@ class AddEditCategoryWidget extends StatelessWidget {
                     return getAppButton(
                         color: AppColors.appGreenColor,
                         textColor: Colors.black,
-                        text: category == null ? "إضافة" : "تعديل",
+                        text: category == null ? "إنشاء فاتورة" : "تعديل",
                         onClick: () {
                           if (formKey.currentState!.validate()) {
                             category == null

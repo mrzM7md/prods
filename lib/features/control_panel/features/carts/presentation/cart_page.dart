@@ -16,6 +16,7 @@ import 'package:prods/features/control_panel/features/categories/presentation/wi
 import 'package:prods/features/control_panel/models/product_model.dart';
 import '../../../../../core/consts/helpers_methods.dart';
 import '../../../../../core/consts/widgets_components.dart';
+import '../../../../../core/services/services_locator.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -114,10 +115,10 @@ class _CartPageState extends State<CartPage> {
                                 }, listener: (BuildContext context, ControlPanelState state) {
                                     if(state is AddInvoiceState && state.isLoaded) {
                                       if(state.isSuccess) {
-                                        showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.black);
+                                        sl<ShowCustomMessage>().showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.black);
                                       }
                                       else{
-                                        showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black);
+                                        sl<ShowCustomMessage>().showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black);
                                       }
                                     }
                                   },
@@ -444,7 +445,7 @@ class _CartPageState extends State<CartPage> {
                       });
                 }, listener: (BuildContext context, ControlPanelState state) {
                 if(state is AddEditCategoryState) {
-                  showCustomToast(context: context, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black,);
+                  sl<ShowCustomMessage>().showCustomToast(context: context, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black,);
                 }
               },
               )

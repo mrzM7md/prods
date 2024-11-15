@@ -25,6 +25,8 @@ import 'package:prods/features/login/business/login_actions.dart';
 import 'package:prods/features/login/business/login_cubit.dart';
 import 'package:uuid/uuid.dart';
 
+import '../consts/widgets_components.dart';
+
 final sl = GetIt.instance;
 
 class ServicesLocator {
@@ -67,5 +69,6 @@ class ServicesLocator {
     /// UUID
     sl.registerLazySingleton(() => const Uuid());
     sl.registerLazySingleton(() => AppDialogs());
+    sl.registerLazySingleton(() => ShowCustomMessage());
   }
 }

@@ -23,14 +23,13 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await setupCheckAppService();
-  Bloc.observer = MyBlocObserver();
+  // Bloc.observer = MyBlocObserver();
 
   ServicesLocator().init();
   // configureApp();
 
   FlutterStatusbarcolor.setStatusBarColor(Colors.white);
   FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
-
 
   await CacheHelper.init();
 

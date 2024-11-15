@@ -148,10 +148,10 @@ class _BuysPageState extends State<BuysPage> {
                           listener: (context, state) {
                             if(state is AddEditBuyState){
                               if (state.isSuccess) {
-                                showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.white);
+                                sl<ShowCustomMessage>().showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.white);
                               }
                               else{
-                                showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black);
+                                sl<ShowCustomMessage>().showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black);
                               }
                             }
                           },
@@ -319,10 +319,10 @@ class _BuysPageState extends State<BuysPage> {
                                                     listener: (context, state) {
                                                       if(state is AddEditBuyState){
                                                         if (state.isSuccess) {
-                                                          showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.white);
+                                                          sl<ShowCustomMessage>().showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appGreenColor, textColor: Colors.white);
                                                         }
                                                         else{
-                                                          showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black);
+                                                          sl<ShowCustomMessage>().showCustomToast(context: pageContext, message: state.message, bkgColor: AppColors.appRedColor, textColor: Colors.black);
                                                         }
                                                       }
                                                     },
@@ -342,7 +342,7 @@ class _BuysPageState extends State<BuysPage> {
                                                     listener: (context, state) {
                                                       if (state is DeleteBuyState && state.isLoaded) {
                                                         if (state.isSuccess) {
-                                                          showCustomToast(
+                                                          sl<ShowCustomMessage>().showCustomToast(
                                                               context: context,
                                                               message: state.message,
                                                               bkgColor: AppColors
@@ -350,7 +350,7 @@ class _BuysPageState extends State<BuysPage> {
                                                               textColor:
                                                               Colors.black);
                                                         } else {
-                                                          showCustomToast(
+                                                          sl<ShowCustomMessage>().showCustomToast(
                                                               context: context,
                                                               message: state.message,
                                                               bkgColor: AppColors
