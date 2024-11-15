@@ -34,24 +34,29 @@ class BuysPage extends StatefulWidget {
 
 class _BuysPageState extends State<BuysPage> {
 
-  late BuysCubit buysCubit;
-  late AppCubit appCubit;
+  late BuysCubit _buysCubit;
+  late AppCubit _appCubit;
+  late final GlobalKey _globalKey;
+  late final ScrollController _scrollInfoHorizontalController;
+
   @override
     void initState() {
       super.initState();
-      buysCubit = BuysCubit.get(context);
-      appCubit = AppCubit.get(context);
-      buysCubit.getAllBuys();   // cubit.changeSortBuyTypeSelected(SortBuyType.FROM_NEWEST_TO_OLDERS, controller.text);
+      _buysCubit = BuysCubit.get(context);
+      _appCubit = AppCubit.get(context);
+      _buysCubit.getAllBuys();   // cubit.changeSortBuyTypeSelected(SortBuyType.FROM_NEWEST_TO_OLDERS, controller.text);
+      _globalKey = GlobalKey();
+      _scrollInfoHorizontalController = ScrollController();
 
-      appCubit.goToAppStateInitialState();
-      appCubit.appActions.setTemporaryTimeFrom(Timestamp.fromDate(
+      _appCubit.goToAppStateInitialState();
+      _appCubit.appActions.setTemporaryTimeFrom(Timestamp.fromDate(
         DateTime(
           DateTime.now().year,
           DateTime.now().month,
           DateTime.now().day,
         )
       ));
-      appCubit.appActions.setTemporaryTimeTo(Timestamp.fromDate(
+      _appCubit.appActions.setTemporaryTimeTo(Timestamp.fromDate(
           DateTime(
             DateTime.now().year,
             DateTime.now().month,
@@ -60,8 +65,6 @@ class _BuysPageState extends State<BuysPage> {
       ));
   }
 
-
-  final GlobalKey _globalKey = GlobalKey();
 
   Future<Uint8List> _capturePng() async {
     RenderRepaintBoundary boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
@@ -94,8 +97,6 @@ class _BuysPageState extends State<BuysPage> {
 
   @override
   Widget build(BuildContext pageContext) {
-    final ScrollController scrollInfoHorizontalController = ScrollController();
-
     return SizedBox(
         width: double.infinity,
         child: Column(
@@ -172,9 +173,9 @@ class _BuysPageState extends State<BuysPage> {
                                 ? "تصفية بالتاريخ"
                                 : "",
                             onClick: () {
-                              sl<AppDialogs>().showFilterByTime(pageContext, appCubit.appActions.getTemporaryTimeFrom(), appCubit.appActions.getTemporaryTimeFrom(), (){
-                                buysCubit.getAllBuys(from: appCubit.appActions.getTemporaryTimeFrom(), to: appCubit.appActions.getTemporaryTimeTo());
-                                appCubit.clickOnSaveFilterOption();
+                              sl<AppDialogs>().showFilterByTime(pageContext, _appCubit.appActions.getTemporaryTimeFrom(), _appCubit.appActions.getTemporaryTimeFrom(), (){
+                                _buysCubit.getAllBuys(from: _appCubit.appActions.getTemporaryTimeFrom(), to: _appCubit.appActions.getTemporaryTimeTo());
+                                _appCubit.clickOnSaveFilterOption();
                               });
                             });
                           },
@@ -222,7 +223,7 @@ class _BuysPageState extends State<BuysPage> {
                             icon: Icons.refresh,
                             text: state.message,
                             onClick: () {
-                              buysCubit.getAllBuys();
+                              _buysCubit.getAllBuys();
                             });
                       }
 
@@ -232,12 +233,12 @@ class _BuysPageState extends State<BuysPage> {
                       }
 
                       return Scrollbar(
-                        controller: scrollInfoHorizontalController,
+                        controller: _scrollInfoHorizontalController,
                         interactive: true,
                         thumbVisibility: true,
                         trackVisibility: true,
                         child: SingleChildScrollView(
-                            controller: scrollInfoHorizontalController,
+                            controller: _scrollInfoHorizontalController,
                             scrollDirection: Axis.horizontal,
                             child: SingleChildScrollView(
                               scrollDirection: Axis.vertical,
@@ -257,16 +258,16 @@ class _BuysPageState extends State<BuysPage> {
                                           if(state is ClickOnSaveFilterOptionState){
                                             return Column(
                                               children: [
-                                                Text("عرض عمليات الشراء التي قمت بها ${appCubit.appActions.getTimeFilterStatement()}", textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold),),
+                                                Text("عرض عمليات الشراء التي قمت بها ${_appCubit.appActions.getTimeFilterStatement()}", textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold),),
                                                 const SizedBox(height: 20,),
-                                                Text("محموع المشتريات ${formatNumber(buysCubit.buysActions.getTotalPriceOfBuys())}  ،  محموع المبيعات ${formatNumber(buysCubit.buysActions.getTotalPriceOfSells())}", style: const TextStyle(fontWeight: FontWeight.bold),)
+                                                Text("محموع المشتريات ${formatNumber(_buysCubit.buysActions.getTotalPriceOfBuys())}  ،  محموع المبيعات ${formatNumber(_buysCubit.buysActions.getTotalPriceOfSells())}", style: const TextStyle(fontWeight: FontWeight.bold),)
                                             ]);
                                           }
                                           return Column(
                                             children: [
                                               const Text("عرض جميع عمليات الشراء التي قمت بها", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
                                               const SizedBox(height: 20,),
-                                              Text("محموع المشتريات ${formatNumber(buysCubit.buysActions.getTotalPriceOfBuys())}  ،  محموع المبيعات ${formatNumber(buysCubit.buysActions.getTotalPriceOfSells())}", style: const TextStyle(fontWeight: FontWeight.bold),)
+                                              Text("محموع المشتريات ${formatNumber(_buysCubit.buysActions.getTotalPriceOfBuys())}  ،  محموع المبيعات ${formatNumber(_buysCubit.buysActions.getTotalPriceOfSells())}", style: const TextStyle(fontWeight: FontWeight.bold),)
                                             ],
                                           );
                                         },
@@ -375,7 +376,7 @@ class _BuysPageState extends State<BuysPage> {
                                                                 "حذف '${data[index].name}'",
                                                                 "هل أنت متأكد، لن تتمكن من استرجاعه بمجرد الحذف",
                                                                     () {
-                                                                  buysCubit.deleteBuy(
+                                                                  _buysCubit.deleteBuy(
                                                                       index, data[index]);
                                                                 });
                                                         },
