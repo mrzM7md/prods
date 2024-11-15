@@ -209,7 +209,9 @@ class InvoicesPage extends StatelessWidget {
                                             if (state.isSuccess) {
                                               generateInvoiceFromInvoiceModels(
                                                   ivd: state.invoiceDetails,
-                                                  invoice: data[index]);
+                                                  invoice: data[index],
+                                                pageContext: pageContext
+                                              );
                                             } else {
                                               showCustomToast(
                                                   context: pageContext,

@@ -11,15 +11,28 @@ import 'package:prods/features/control_panel/models/invoice_model.dart';
 import '../../../../../core/consts/app_colors.dart';
 import '../../../business/control_panel_cubit.dart';
 
-class InvoicesPage extends StatelessWidget {
+class InvoicesPage extends StatefulWidget {
   const InvoicesPage({super.key});
 
   @override
-  Widget build(BuildContext pageContext) {
-    final ScrollController scrollInfoHorizontalController = ScrollController();
+  State<InvoicesPage> createState() => _InvoicesPageState();
+}
 
-    final InvoiceCubit invoiceCubit = InvoiceCubit.get(pageContext)
-      ..getInvoiceToday();
+class _InvoicesPageState extends State<InvoicesPage> {
+
+  late final ScrollController scrollInfoHorizontalController;
+  late final InvoiceCubit invoiceCubit;
+
+
+  @override
+  void initState() {
+    scrollInfoHorizontalController = ScrollController();
+    invoiceCubit = InvoiceCubit.get(context)..getInvoiceToday();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext pageContext) {
     return SizedBox(
         width: double.infinity,
         child: Column(
