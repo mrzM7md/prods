@@ -11,7 +11,6 @@ class BuysActions {
 
   Future<List<BuyModel>> getAllBuys() async {
     QuerySnapshot snapshot = await (await getBuysReference()).orderBy('createdAt', descending: true)
-        .orderBy('createdAt', descending: true)
         .get();
     List<BuyModel> buys = [];
     for (var doc in snapshot.docs) {

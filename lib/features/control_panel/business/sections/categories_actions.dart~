@@ -27,16 +27,14 @@ class CategoriesActions {
     return categories;
   }
 
-  Future<CategoryModel> addNewCategory(String name, String id) async {
-    // CollectionReference snapshot = await getCategoriesReference();
-    CategoryModel categoryModel = CategoryModel(id: id, name: name, createdAt: Timestamp.now(), updatedAt: Timestamp.now());
+  Future<CategoryModel> addNewCategory(CategoryModel newCategory) async {
+    print("UUID: ${newCategory.id}");
+    CollectionReference snapshot = await getCategoriesReference();
+     snapshot.doc(newCategory.id).set(
+        newCategory.toDocument()
+   );
 
-   //  var x = await snapshot.doc(id).set(
-   //      categoryModel.toDocument()
-   // );
-
-    var c = categoryModel.toDocument();
-    return CategoryModel.fromDocument(c);
+    return CategoryModel.fromDocument(newCategory.toDocument());
     // snapshot
   }
 
@@ -64,7 +62,7 @@ class CategoriesActions {
     List<String> catNames = [];
     for(var id in catIds){
       var data = (await (await getCategoriesReference()).doc(id).get()).data();
-      if(data == null){
+      if(data != null){
         var name = await ( data as Map)["name"];
         catNames.add(name);
       }

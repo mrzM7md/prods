@@ -27,16 +27,13 @@ class CategoriesActions {
     return categories;
   }
 
-  Future<CategoryModel> addNewCategory(String name, String id) async {
-    // CollectionReference snapshot = await getCategoriesReference();
-    CategoryModel categoryModel = CategoryModel(id: id, name: name, createdAt: Timestamp.now(), updatedAt: Timestamp.now());
+  Future<CategoryModel> addNewCategory(CategoryModel newCategory) async {
+    CollectionReference snapshot = await getCategoriesReference();
+     snapshot.doc(newCategory.id).set(
+        newCategory.toDocument()
+   );
 
-   //  var x = await snapshot.doc(id).set(
-   //      categoryModel.toDocument()
-   // );
-
-    var c = categoryModel.toDocument();
-    return CategoryModel.fromDocument(c);
+    return newCategory;
     // snapshot
   }
 

@@ -110,7 +110,7 @@ class CategoriesCubit extends ControlPanelCubit {
         // We not neede this line because 'Future method' will not take any time
         emit(DeleteCategoryState(categoryModel: category, isLoaded: true, isSuccess: true, message: "تم الحذف بنجاح"));
         /// This Must Be..
-        await Future.delayed(const Duration(milliseconds: 500));
+        // await Future.delayed(const Duration(seconds: 1));
         removeItemByIndexFromCategories(index);
         return;
         
