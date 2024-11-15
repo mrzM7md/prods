@@ -7,6 +7,7 @@ import 'package:prods/core/consts/app_colors.dart';
 import 'package:prods/core/consts/app_images.dart';
 import 'package:prods/core/consts/app_routes.dart';
 import 'package:prods/core/consts/sscreens_size.dart';
+import 'package:prods/core/consts/widgets_components.dart';
 import 'package:prods/core/enums/enums.dart';
 import 'package:prods/core/network/local/cache_helper.dart';
 import 'package:prods/core/values//app_values.dart';
@@ -26,12 +27,11 @@ class ControlPanelSectionsWidget extends StatefulWidget {
 
 class _ControlPanelSectionsWidgetState extends State<ControlPanelSectionsWidget> {
 
-  late ControlPanelCubit _cubit;
-
+  late final ControlPanelCubit _cubit;
+  late Future<String> storeName;
   @override
   void initState() {
     _cubit = ControlPanelCubit.get(context);
-    super.initState();
 
     if(_cubit.getConnectivityState() == ConnectivityState.ONLINE) {
       _cubit.goOnline();
@@ -39,6 +39,11 @@ class _ControlPanelSectionsWidgetState extends State<ControlPanelSectionsWidget>
     else{
       _cubit.goOffline();
     }
+
+    storeName = _cubit.appActions.getStoreName();
+
+    super.initState();
+
   }
 
   @override
@@ -63,7 +68,7 @@ class _ControlPanelSectionsWidgetState extends State<ControlPanelSectionsWidget>
           ),
           const SizedBox(height: 10,),
           FutureBuilder(
-            future: _cubit.appActions.getStoreName(),
+            future: storeName,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const SizedBox(
@@ -238,8 +243,11 @@ class _ControlPanelSectionsWidgetState extends State<ControlPanelSectionsWidget>
             icon: AppImages.logout,
             color: AppColors.appRedColor,
             press: () async {
-              FirebaseAuth.instance.signOut();
-              context.goNamed(AppRoutes.loginRouter);
+              showDeleteConfirmationMessage(context, Colors.white, "تسجيل الخروج", "بعد أن تقوم بتسجيل الخروج يرجى إعادة تسجيل الدخول إن كنت تريد استعمال حساب آخر", (){
+                FirebaseAuth.instance.signOut();
+                context.goNamed(AppRoutes.loginRouter);
+              }, buttonTitle: "تسجيل الخروج");
+
             },
             bgColor: null,
           )

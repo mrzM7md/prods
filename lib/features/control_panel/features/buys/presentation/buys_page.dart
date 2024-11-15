@@ -251,7 +251,7 @@ class _BuysPageState extends State<BuysPage> {
                                         margin: const EdgeInsetsDirectional.only(top: 10),
                                         width: MediaQuery.of(pageContext).size.width,
                                         padding: const EdgeInsetsDirectional.all(10),
-                                        color: AppColors.appGreenColor,
+                                        color: AppColors.appLightGreenColor,
                                         child: BlocBuilder<AppCubit, AppState>(
                                         buildWhen: (previous, current) => current is ClickOnSaveFilterOptionState,
                                         builder: (context, state) {

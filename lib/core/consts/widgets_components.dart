@@ -134,7 +134,7 @@ void showCustomToast({
 }
 
 void showDeleteConfirmationMessage(BuildContext context, Color bkgColor,
-    String title, String description, Function onClick) {
+  String title, String description, Function onClick, {String buttonTitle = "حذف"}) {
   late OverlayEntry overlayEntry;
   overlayEntry = OverlayEntry(
     builder: (context) => Stack(
@@ -203,7 +203,7 @@ void showDeleteConfirmationMessage(BuildContext context, Color bkgColor,
                     getAppButton(
                       color: AppColors.appRedColor,
                       textColor: Colors.white,
-                      text: "حذف",
+                      text: buttonTitle,
                       onClick: () {
                         overlayEntry.remove();
                         onClick();

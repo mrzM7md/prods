@@ -37,6 +37,8 @@ class _BuysPageState extends State<BuysPage> {
   late BuysCubit _buysCubit;
   late AppCubit _appCubit;
   late final GlobalKey _globalKey;
+  late final ScrollController _scrollInfoHorizontalController;
+
   @override
     void initState() {
       super.initState();
@@ -44,6 +46,7 @@ class _BuysPageState extends State<BuysPage> {
       _appCubit = AppCubit.get(context);
       _buysCubit.getAllBuys();   // cubit.changeSortBuyTypeSelected(SortBuyType.FROM_NEWEST_TO_OLDERS, controller.text);
       _globalKey = GlobalKey();
+      _scrollInfoHorizontalController = ScrollController();
 
       _appCubit.goToAppStateInitialState();
       _appCubit.appActions.setTemporaryTimeFrom(Timestamp.fromDate(
@@ -94,8 +97,6 @@ class _BuysPageState extends State<BuysPage> {
 
   @override
   Widget build(BuildContext pageContext) {
-    final ScrollController scrollInfoHorizontalController = ScrollController();
-
     return SizedBox(
         width: double.infinity,
         child: Column(
@@ -232,12 +233,12 @@ class _BuysPageState extends State<BuysPage> {
                       }
 
                       return Scrollbar(
-                        controller: scrollInfoHorizontalController,
+                        controller: _scrollInfoHorizontalController,
                         interactive: true,
                         thumbVisibility: true,
                         trackVisibility: true,
                         child: SingleChildScrollView(
-                            controller: scrollInfoHorizontalController,
+                            controller: _scrollInfoHorizontalController,
                             scrollDirection: Axis.horizontal,
                             child: SingleChildScrollView(
                               scrollDirection: Axis.vertical,

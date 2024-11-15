@@ -7,6 +7,7 @@ import 'package:prods/core/consts/app_colors.dart';
 import 'package:prods/core/consts/app_images.dart';
 import 'package:prods/core/consts/app_routes.dart';
 import 'package:prods/core/consts/sscreens_size.dart';
+import 'package:prods/core/consts/widgets_components.dart';
 import 'package:prods/core/enums/enums.dart';
 import 'package:prods/core/network/local/cache_helper.dart';
 import 'package:prods/core/values//app_values.dart';
@@ -242,8 +243,11 @@ class _ControlPanelSectionsWidgetState extends State<ControlPanelSectionsWidget>
             icon: AppImages.logout,
             color: AppColors.appRedColor,
             press: () async {
-              FirebaseAuth.instance.signOut();
-              context.goNamed(AppRoutes.loginRouter);
+              showDeleteConfirmationMessage(context, Colors.white, "تسجيل الخروج", "بعد أن تقوم بتسجيل الخروج يرجى إغلاق البرنامج ثم إعادة فتحه إن كنت تريد استعمال حساب آخر", (){
+                FirebaseAuth.instance.signOut();
+                context.goNamed(AppRoutes.loginRouter);
+              }, buttonTitle: "تسجيل الخروج");
+
             },
             bgColor: null,
           )
