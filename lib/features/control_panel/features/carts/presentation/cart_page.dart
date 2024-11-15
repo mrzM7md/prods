@@ -17,20 +17,40 @@ import 'package:prods/features/control_panel/models/product_model.dart';
 import '../../../../../core/consts/helpers_methods.dart';
 import '../../../../../core/consts/widgets_components.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   const CartPage({super.key});
 
   @override
-  Widget build(BuildContext pageContext) {
-    CartsCubit cartsCubit = CartsCubit.get(pageContext);
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    GlobalKey<FormState> addDiscountFormKey = GlobalKey<FormState>();
-    TextEditingController controller = TextEditingController();
-    TextEditingController discountController = TextEditingController();
-    final ScrollController scrollInfoHorizontalController = ScrollController();
-    cartsCubit.getProductsByIds(
-      cartsCubit.cartActions.getCart().map((c) => c.productId).toList(),
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  late CartsCubit _cartsCubit;
+  late GlobalKey<FormState> _formKey;
+  late GlobalKey<FormState> _addDiscountFormKey;
+  late TextEditingController _controller;
+  late TextEditingController _discountController;
+  late final ScrollController _scrollInfoHorizontalController;
+
+
+  @override
+  void initState() {
+    _cartsCubit = CartsCubit.get(context);
+    _formKey = GlobalKey<FormState>();
+    _addDiscountFormKey = GlobalKey<FormState>();
+    _controller = TextEditingController();
+    _discountController = TextEditingController();
+    _scrollInfoHorizontalController = ScrollController();
+
+    _cartsCubit.getProductsByIds(
+    _cartsCubit.cartActions.getCart().map((c) => c.productId).toList(),
     );
+
+  super.initState();
+  }
+  @override
+  Widget build(BuildContext pageContext) {
+
 
   return BlocBuilder<CartsCubit, ControlPanelState>(
     buildWhen: (previous, current) => current is GetProductsByIdsState,
@@ -58,7 +78,7 @@ class CartPage extends StatelessWidget {
                         ],
                       ), fallback: (context) => Container(),),
                   ),
-                  AddEditCategoryWidget(context: pageContext, controller: controller, formKey: formKey, message: "", bkgColor: Colors.white, textColor: Colors.black),
+                  AddEditCategoryWidget(context: pageContext, controller: _controller, formKey: _formKey, message: "", bkgColor: Colors.white, textColor: Colors.black),
                   BlocBuilder<CategoriesCubit, ControlPanelState>(
                     buildWhen: (previous, current) => current is ChangeAddNewOrEditCategoryBoxState, builder: (context, state) {
                     if(!(state is ! ChangeAddNewOrEditCategoryBoxState || ! state.isClickedOnAddNewCategory)) {
@@ -79,7 +99,7 @@ class CartPage extends StatelessWidget {
                               return BlocBuilder<CartsCubit, ControlPanelState>(
                                 buildWhen: (previous, current) => current is DeleteItemFromCartState,
                                 builder: (context, state) {
-                                  if(! cartsCubit.cartActions.isThereAnyItemInsideCart()){
+                                  if(! _cartsCubit.cartActions.isThereAnyItemInsideCart()){
                                     return Container();
                                   }
                                   return getAppButton(
@@ -87,7 +107,7 @@ class CartPage extends StatelessWidget {
                                     textColor: Colors.black,
                                     text:"إنشاء فاتورة",
                                     onClick: () async {
-                                      showCompleteSellInvoicePreparing(pageContext, cartsCubit.cartActions.getTotalPrice());
+                                      showCompleteSellInvoicePreparing(pageContext, _cartsCubit.cartActions.getTotalPrice());
                                     });
                               },
                             );
@@ -105,9 +125,9 @@ class CartPage extends StatelessWidget {
                           ),
                           const SizedBox(width: 5,),
                           getAppButton(color: AppColors.appGrey, textColor: Colors.red, text: MediaQuery.of(context).size.width > ScreensSizes.smallScreen ?  "حذف محتوى السلة" : "", onClick:(){
-                            cartsCubit.cartActions.removeCart();
-                            cartsCubit.getProductsByIds(
-                              cartsCubit.cartActions.getCart().map((c) => c.productId).toList(),
+                            _cartsCubit.cartActions.removeCart();
+                            _cartsCubit.getProductsByIds(
+                              _cartsCubit.cartActions.getCart().map((c) => c.productId).toList(),
                             );
                           }, icon: Icons.clear_all,  )
                         ],
@@ -119,10 +139,10 @@ class CartPage extends StatelessWidget {
                      child: Scrollbar(
                             interactive: true,
                             trackVisibility: true,
-                            controller: scrollInfoHorizontalController,
+                            controller: _scrollInfoHorizontalController,
                             thumbVisibility: true,
                             child: SingleChildScrollView(
-                                controller: scrollInfoHorizontalController,
+                                controller: _scrollInfoHorizontalController,
                                 scrollDirection: Axis.horizontal,
                                 child: SingleChildScrollView(
                                   scrollDirection: Axis.vertical,
@@ -143,7 +163,7 @@ class CartPage extends StatelessWidget {
                                     ],
                                     rows: List<DataRow>.generate(data.length,
                                           (index) {
-                                      if(! cartsCubit.cartActions.isThisProductInCart(data[index].id)) {
+                                      if(! _cartsCubit.cartActions.isThisProductInCart(data[index].id)) {
                                     return const DataRow(cells: []);
                                   }
                                   return DataRow(
@@ -164,7 +184,7 @@ class CartPage extends StatelessWidget {
                                                   color: AppColors.appRedColor,
                                                   onPressed: () {
                                                     showDeleteConfirmationMessage(pageContext, Colors.white, "استبعاد المنتج ''${data[index].name}'' من السلة ", "هل أنت متأكد؟", (){
-                                                      cartsCubit.deleteItemFromCart(data[index].id);
+                                                      _cartsCubit.deleteItemFromCart(data[index].id);
                                                     });
                                                   },
                                                   child: Image.asset(
@@ -176,18 +196,18 @@ class CartPage extends StatelessWidget {
                                                 MaterialButton(elevation: 0,
                                                   color: AppColors.appGreenColor,
                                                   onPressed: () {
-                                                    if(cartsCubit.cartActions.getDiscount(data[index].id) > 0.0){
-                                                      discountController.text =  cartsCubit.cartActions.getDiscount(data[index].id).toString();
+                                                    if(_cartsCubit.cartActions.getDiscount(data[index].id) > 0.0){
+                                                      _discountController.text =  _cartsCubit.cartActions.getDiscount(data[index].id).toString();
                                                     }
                                                     else{
-                                                      discountController.text = "";
+                                                      _discountController.text = "";
                                                     }
                                                     late OverlayEntry showOverlayEntry;
                                                     showOverlayEntry = showAddOnFieldMessage((value){
                                                       if (!RegExp(r'^\d*$').hasMatch(value)) {
-                                                        discountController.text = value.replaceAll(RegExp(r'[^0-9]'), '');
-                                                        discountController.selection = TextSelection.fromPosition(
-                                                          TextPosition(offset: discountController.text.length),
+                                                        _discountController.text = value.replaceAll(RegExp(r'[^0-9]'), '');
+                                                        _discountController.selection = TextSelection.fromPosition(
+                                                          TextPosition(offset: _discountController.text.length),
                                                         );
                                                       }
                                                     },
@@ -195,23 +215,23 @@ class CartPage extends StatelessWidget {
                                                           if (value.toString().isEmpty || value == null) {
                                                             return "هذا الحقل مطلوب";
                                                           }
-                                                          if(!cartsCubit.cartActions.isPriceBiggerThanDiscountPrice(data[index].price,
+                                                          if(!_cartsCubit.cartActions.isPriceBiggerThanDiscountPrice(data[index].price,
                                                               double.parse(value.toString()))){
                                                             return "يجب أن يكون الخصم أقل من السعر";
                                                           }
                                                           return null;
-                                                        },addDiscountFormKey,pageContext, Colors.white, "إضافة خصم إلى'' ${data[index].name}''", "السعر الأصلي ${formatNumber(data[index].price)}",
+                                                        },_addDiscountFormKey,pageContext, Colors.white, "إضافة خصم إلى'' ${data[index].name}''", "السعر الأصلي ${formatNumber(data[index].price)}",
                                                             (){
-                                                          if(addDiscountFormKey.currentState!.validate()){
-                                                            cartsCubit.addDiscountToItem(data[index].id, double.parse(discountController.text));
+                                                          if(_addDiscountFormKey.currentState!.validate()){
+                                                            _cartsCubit.addDiscountToItem(data[index].id, double.parse(_discountController.text));
                                                             showOverlayEntry.remove();
                                                           }
-                                                        }, discountController);
+                                                        }, _discountController);
                                                   },
                                                   child: BlocBuilder<CartsCubit, ControlPanelState>(
                                                     buildWhen: (previous, current) => current is ChangeQuantityToItemAndAddDiscountState && current.productId == data[index].id,
                                                     builder: (context, state) {
-                                                      if(cartsCubit.cartActions.getDiscount(data[index].id) > 0.0){
+                                                      if(_cartsCubit.cartActions.getDiscount(data[index].id) > 0.0){
                                                         return const Text("تعديل الخصم");
                                                       }
                                                       return const Text("إضافة خصم");
@@ -232,10 +252,10 @@ class CartPage extends StatelessWidget {
                                                     builder: (context, state) {
                                                       return Row(
                                                         children: [
-                                                          getAppButton(color: AppColors.appLightBlueColor, textColor: Colors.black, 
-                                                              text: "${cartsCubit.cartActions.getQuantity(data[index].id).toInt() != 0 ? "${cartsCubit.cartActions.getQuantity(data[index].id).toInt()} ${cartsCubit.cartActions.convertDecimalToCartQuantityAfterComa(cartsCubit.cartActions.getQuantity(data[index].id)) != CartQuantityAfterComa.NO_THING  ?"و":""}" : ""} ${cartsCubit.cartActions.getAfterComaToName()[getNumberNearerAfterComa(cartsCubit.cartActions.getQuantity(data[index].id))]}"
+                                                          getAppButton(color: AppColors.appLightBlueColor, textColor: Colors.black,
+                                                              text: "${_cartsCubit.cartActions.getQuantity(data[index].id).toInt() != 0 ? "${_cartsCubit.cartActions.getQuantity(data[index].id).toInt()} ${_cartsCubit.cartActions.convertDecimalToCartQuantityAfterComa(_cartsCubit.cartActions.getQuantity(data[index].id)) != CartQuantityAfterComa.NO_THING  ?"و":""}" : ""} ${_cartsCubit.cartActions.getAfterComaToName()[getNumberNearerAfterComa(_cartsCubit.cartActions.getQuantity(data[index].id))]}"
                                                               , onClick: (){
-                                                            showCustomDialog(pageContext, data[index].id, data[index].name, data[index].remainedQuantity.toDouble(), cartsCubit.cartActions.getQuantity(data[index].id).toDouble());
+                                                            showCustomDialog(pageContext, data[index].id, data[index].name, data[index].remainedQuantity.toDouble(), _cartsCubit.cartActions.getQuantity(data[index].id).toDouble());
                                                           }),
                                                           const Text(" / "),
                                                           Text("${data[index].remainedQuantity}"),
@@ -271,7 +291,7 @@ class CartPage extends StatelessWidget {
                                               return Align(
                                                   alignment: Alignment.center,
                                                   child: Text(
-                                                    formatNumber(cartsCubit.cartActions.getDiscount(data[index].id)),
+                                                    formatNumber(_cartsCubit.cartActions.getDiscount(data[index].id)),
                                                     style: const TextStyle(fontWeight: FontWeight.bold),
                                                   ));
                                             },
@@ -283,7 +303,7 @@ class CartPage extends StatelessWidget {
                                                   return Align(
                                                       alignment: Alignment.center,
                                                       child: Text(
-                                                        formatNumber(cartsCubit.cartActions.getPriceAfterDiscount(data[index].id)),
+                                                        formatNumber(_cartsCubit.cartActions.getPriceAfterDiscount(data[index].id)),
                                                         style: const TextStyle(fontWeight: FontWeight.bold),
                                                       ));
                                                 },
@@ -295,7 +315,7 @@ class CartPage extends StatelessWidget {
                                             return Align(
                                             alignment: Alignment.center,
                                             child: Text(
-                                            formatNumber(cartsCubit.cartActions.getPriceAfterDiscountAndQuantity(data[index].id)),
+                                            formatNumber(_cartsCubit.cartActions.getPriceAfterDiscountAndQuantity(data[index].id)),
                                             style: const TextStyle(fontWeight: FontWeight.bold),
                                                   ));
                                             },
@@ -320,7 +340,7 @@ class CartPage extends StatelessWidget {
                             return Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  formatNumber(cartsCubit.cartActions.getTotalPrice()),
+                                  formatNumber(_cartsCubit.cartActions.getTotalPrice()),
                                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                 ));
                           },
@@ -437,5 +457,4 @@ class CartPage extends StatelessWidget {
 
     Overlay.of(context).insert(overlayEntry);
   }
-
 }

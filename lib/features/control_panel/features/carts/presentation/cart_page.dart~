@@ -17,20 +17,35 @@ import 'package:prods/features/control_panel/models/product_model.dart';
 import '../../../../../core/consts/helpers_methods.dart';
 import '../../../../../core/consts/widgets_components.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   const CartPage({super.key});
 
   @override
-  Widget build(BuildContext pageContext) {
-    CartsCubit cartsCubit = CartsCubit.get(pageContext);
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    GlobalKey<FormState> addDiscountFormKey = GlobalKey<FormState>();
-    TextEditingController controller = TextEditingController();
-    TextEditingController discountController = TextEditingController();
-    final ScrollController scrollInfoHorizontalController = ScrollController();
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  late CartsCubit cartsCubit;
+  late GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  late GlobalKey<FormState> addDiscountFormKey = GlobalKey<FormState>();
+  late TextEditingController controller = TextEditingController();
+  late TextEditingController discountController = TextEditingController();
+  late final ScrollController scrollInfoHorizontalController = ScrollController();
+
+
+  @override
+  void initState() {
+    cartsCubit = CartsCubit.get(context);
+
     cartsCubit.getProductsByIds(
-      cartsCubit.cartActions.getCart().map((c) => c.productId).toList(),
+    cartsCubit.cartActions.getCart().map((c) => c.productId).toList(),
     );
+
+  super.initState();
+  }
+  @override
+  Widget build(BuildContext pageContext) {
+
 
   return BlocBuilder<CartsCubit, ControlPanelState>(
     buildWhen: (previous, current) => current is GetProductsByIdsState,
@@ -87,7 +102,7 @@ class CartPage extends StatelessWidget {
                                     textColor: Colors.black,
                                     text:"إنشاء فاتورة",
                                     onClick: () async {
-                                      showCompleteInvoicePreparing(pageContext, cartsCubit.cartActions.getTotalPrice());
+                                      showCompleteSellInvoicePreparing(pageContext, cartsCubit.cartActions.getTotalPrice());
                                     });
                               },
                             );
@@ -232,7 +247,7 @@ class CartPage extends StatelessWidget {
                                                     builder: (context, state) {
                                                       return Row(
                                                         children: [
-                                                          getAppButton(color: AppColors.appLightBlueColor, textColor: Colors.black, 
+                                                          getAppButton(color: AppColors.appLightBlueColor, textColor: Colors.black,
                                                               text: "${cartsCubit.cartActions.getQuantity(data[index].id).toInt() != 0 ? "${cartsCubit.cartActions.getQuantity(data[index].id).toInt()} ${cartsCubit.cartActions.convertDecimalToCartQuantityAfterComa(cartsCubit.cartActions.getQuantity(data[index].id)) != CartQuantityAfterComa.NO_THING  ?"و":""}" : ""} ${cartsCubit.cartActions.getAfterComaToName()[getNumberNearerAfterComa(cartsCubit.cartActions.getQuantity(data[index].id))]}"
                                                               , onClick: (){
                                                             showCustomDialog(pageContext, data[index].id, data[index].name, data[index].remainedQuantity.toDouble(), cartsCubit.cartActions.getQuantity(data[index].id).toDouble());
@@ -437,5 +452,4 @@ class CartPage extends StatelessWidget {
 
     Overlay.of(context).insert(overlayEntry);
   }
-
 }
