@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:prods/features/control_panel/models/buy_model.dart';
 
@@ -91,6 +92,9 @@ class BuysActions {
   }
 
   removeItemByIndexFromBuys(int index) => _buys.removeAt(index);
+
+  getTotalPriceOfBuys() => getBuys().map((b) => b.priceOfBuy * b.quantity).sum;
+  getTotalPriceOfSells() => getBuys().map((b) => b.priceOfSell * b.quantity).sum;
 
 //#### END BUYS ACTION METHODS ###//
 }

@@ -15,11 +15,11 @@ class PdfPage extends StatefulWidget {
 }
 
 class _PdfPageState extends State<PdfPage> {
-  GlobalKey _globalKey = GlobalKey();
+  final GlobalKey _globalKey = GlobalKey();
 
   Future<Uint8List> _capturePng() async {
     RenderRepaintBoundary boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-    var image = await boundary.toImage(pixelRatio: 3.0);
+    var image = await boundary.toImage();
     ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
     return byteData!.buffer.asUint8List();
   }
@@ -39,7 +39,7 @@ class _PdfPageState extends State<PdfPage> {
     );
 
     final output = await getTemporaryDirectory();
-    final file = File("${output.path}/widget.pdf");
+    final file = File("${output.path}/buys_invoice.pdf");
     await file.writeAsBytes(await pdf.save());
 
     // فتح ملف الـ PDF بعد إنشائه
@@ -50,34 +50,21 @@ class _PdfPageState extends State<PdfPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('PDF Example'),
+        title: const Text('PDF Example'),
       ),
       body: Center(
         child: Column(
           children: [
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: RepaintBoundary(
-                    key: _globalKey,
-                    child: Container(
-                      color: Colors.white,
-                      child: Column(
-                        children: [
-                          Text('Hello World'),
-                          // أضف المزيد من المحتوى هنا
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+            RepaintBoundary(
+              key: _globalKey,
+              child: Container(
+                color: Colors.white,
+                child: const Text('Hello World'),
               ),
             ),
             ElevatedButton(
               onPressed: _generatePdf,
-              child: Text('Generate PDF'),
+              child: const Text('Generate PDF'),
             ),
           ],
         ),

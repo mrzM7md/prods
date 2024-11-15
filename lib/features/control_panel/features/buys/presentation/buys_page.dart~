@@ -185,10 +185,12 @@ class _BuysPageState extends State<BuysPage> {
                           builder: (context, state) {
                             return ConditionalBuilder(
                                 condition: state is GetAllBuysState && state.buys != null && state.buys!.isNotEmpty,
-                                builder: (context) =>
-                                    getAppButton(
-                                    icon: Icons.print,
-                                    color: Colors.white,
+                                builder: (context) => BlocBuilder<AppCubit, AppState>(
+                                  buildWhen: (previous, current) => current is ClickOnSaveFilterOptionState,
+                                  builder: (context, state) {
+                              return getAppButton(
+                                  icon: Icons.print,
+                                  color: Colors.white,
                                     textColor: Colors.black,
                                     text: MediaQuery.sizeOf(pageContext).width >
                                         ScreensSizes.smallScreen
@@ -197,7 +199,9 @@ class _BuysPageState extends State<BuysPage> {
                                     onClick: () {
                                       _generatePdf();
                                     }
-                                ),
+                                );
+  },
+),
                                 fallback: (context) => Container(),
                             );
   },

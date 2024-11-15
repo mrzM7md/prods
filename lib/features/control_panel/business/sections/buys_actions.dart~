@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:prods/features/control_panel/models/buy_model.dart';
 
@@ -9,7 +10,9 @@ class BuysActions {
   final List<BuyModel> _buys = [];
 
   Future<List<BuyModel>> getAllBuys() async {
-    QuerySnapshot snapshot = await (await getBuysReference()).orderBy('createdAt', descending: true).get();
+    QuerySnapshot snapshot = await (await getBuysReference()).orderBy('createdAt', descending: true)
+        .orderBy('createdAt', descending: true)
+        .get();
     List<BuyModel> buys = [];
     for (var doc in snapshot.docs) {
       var myDoc = (doc.data() as Map<String, dynamic>);
@@ -89,6 +92,8 @@ class BuysActions {
   }
 
   removeItemByIndexFromBuys(int index) => _buys.removeAt(index);
+
+  getTotalPrice() => getBuys().map((b) => b.priceOfBuy * b.quantity).sum;
 
 //#### END BUYS ACTION METHODS ###//
 }

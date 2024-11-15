@@ -19,4 +19,21 @@ class AppActions {
     String storeName = data['storeName'];
     return storeName;
   }
+
+  String getTimeFilterStatement(){
+    int dayFrom = getTemporaryTimeFrom().toDate().day;
+    int monthFrom = getTemporaryTimeFrom().toDate().month;
+    int yearFrom = getTemporaryTimeFrom().toDate().year;
+
+    int dayTo = getTemporaryTimeTo().toDate().day;
+    int monthTo = getTemporaryTimeTo().toDate().month;
+    int yearTo = getTemporaryTimeTo().toDate().year;
+
+    // get number of days between from and to
+    int days = DateTime(yearTo, monthTo, dayTo)
+       .difference(DateTime(yearFrom, monthFrom, dayFrom))
+       .inDays + 1;
+
+    return "${days == 0 ? "في يوم $dayFrom شهر $monthFrom سنة $yearFrom" : "من يوم $dayFrom شهر $monthFrom سنة $yearFrom الى يوم $dayTo شهر $monthTo سنة $yearTo"} ${days == 0 ? "" : days == 1 ? "أي لمدة يوم واحد" : days == 2 ? "أي لمدة يومين اثنين" : days > 2 && days < 11 ?  "أي لمدة $days أيام" : "أي لمدة $days يوم"}";
+  }
 }

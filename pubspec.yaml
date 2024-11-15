@@ -95,6 +95,7 @@ dependencies:
   flutter_statusbarcolor_ns: ^0.6.0
   flutter_launcher_icons: ^0.14.1
   permission_handler: ^11.3.1
+  printing: ^5.13.4
 
 
 dev_dependencies:
