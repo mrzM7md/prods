@@ -220,7 +220,7 @@ class AddEditProductPage extends StatelessWidget {
                                  if(state is AddEditProductState && ! state.isLoaded){
                                    return getAppProgress();
                                  }
-
+                                 
                                 return getAppButton(color: AppColors.appGreenColor, textColor: Colors.black, text: "حفظ",
                                     onClick: () {
                                   if(formKey.currentState!.validate()){

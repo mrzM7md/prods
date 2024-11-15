@@ -32,7 +32,7 @@ class _ProductsPageState extends State<ProductsPage> {
   late final ScrollController _scrollCategoryController;
   late final ScrollController _scrollInfoHorizontalController;
 
-  
+
   @override
   void initState() {
     _productCubit = ProductsCubit.get(context);
