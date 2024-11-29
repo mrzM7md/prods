@@ -12,6 +12,8 @@ import 'package:prods/features/control_panel/business/sections/products_cubit.da
 import 'package:prods/features/control_panel/features/products/presentation/widgets/filter_option_button_Item_widget.dart';
 import 'package:prods/features/control_panel/models/category_model.dart';
 import 'package:prods/features/control_panel/models/product_model.dart';
+import 'package:uuid/uuid.dart';
+import 'package:intl/intl.dart' as intl;
 
 import '../../../../../core/services/services_locator.dart';
 
@@ -38,6 +40,8 @@ class _AddEditProductPageState extends State<AddEditProductPage> {
 
   @override
     void initState() {
+    _id = null;
+
     _nameController = TextEditingController();
     _priceController = TextEditingController();
     _remainedQuantityController = TextEditingController();
@@ -46,13 +50,15 @@ class _AddEditProductPageState extends State<AddEditProductPage> {
     _formKey = GlobalKey<FormState>();
     _titleWord = StringBuffer("إضافة منتج جديد");
 
+    _cubit.productsActions.clearItemFromSelectedCategoriesForProductAddingFilter();
     CategoriesCubit.get(context).getAllCategories();
 
     if (widget.productId != "-1") {
       _cubit.getProductDetailById(widget.productId!);
-    }else{
-      _cubit.productsActions.clearItemFromSelectedCategoriesForProductAddingFilter();
     }
+    //}else{
+    //   _cubit.productsActions.clearItemFromSelectedCategoriesForProductAddingFilter();
+    // }
 
     super.initState();
   }
@@ -254,7 +260,7 @@ class _AddEditProductPageState extends State<AddEditProductPage> {
                                     }
                                     else{
                                       _cubit.addNewProduct(
-                                          ProductModel(id: "", name: _nameController.text, price: double.parse(_priceController.text), categoryIds: _cubit.productsActions.getSelectedCategoriesForProductAdding(), remainedQuantity: double.parse(_remainedQuantityController.text), boughtQuantity: double.parse(_boughtQuantityController.text), createdAt: Timestamp.now(), updatedAt: Timestamp.now())
+                                          ProductModel(id: "${sl<Uuid>().v4()}-${ intl.DateFormat('yyyyMMddHHmmss').format(DateTime.now())}", name: _nameController.text, price: double.parse(_priceController.text), categoryIds: _cubit.productsActions.getSelectedCategoriesForProductAdding(), remainedQuantity: double.parse(_remainedQuantityController.text), boughtQuantity: double.parse(_boughtQuantityController.text), createdAt: Timestamp.now(), updatedAt: Timestamp.now())
                                       );
                                     }
 

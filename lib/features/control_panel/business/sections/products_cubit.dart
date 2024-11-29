@@ -19,17 +19,17 @@ class ProductsCubit extends ControlPanelCubit {
 
   setNewItemIntoProducts(ProductModel product) {
     productsActions.addItemToProducts(product);
-    emit(GetAllProductsState(products: productsActions.getProducts(), isLoaded: true, message: "ام جلب الأصنافب نجاح", isSuccess: true));
+    emit(GetAllProductsState(products: productsActions.getProducts(), isLoaded: true, message: "ام جلب المنتجات نجاح", isSuccess: true));
   }
 
-  editNewItemIntoProducts(ProductModel product) {
-    productsActions.editItemInProductById(product.id, product);
-    emit(GetAllProductsState(products: productsActions.getProducts(), isLoaded: true, message: "ام جلب الأصنافب نجاح", isSuccess: true));
+  editItemIntoProducts(ProductModel product) async {
+    await productsActions.editItemInProductById(product.id, product);
+    emit(GetAllProductsState(products: productsActions.getProducts(), isLoaded: true, message: "ام جلب المنتجات نجاح", isSuccess: true));
   }
 
   removeItemByIndexFromProducts(int index){
     productsActions.removeItemByIndexFromProducts(index);
-    emit(GetAllProductsState(products: productsActions.getProducts(), isLoaded: true, message: "ام جلب الأصنافب نجاح", isSuccess: true));
+    emit(GetAllProductsState(products: productsActions.getProducts(), isLoaded: true, message: "ام جلب المنتجات نجاح", isSuccess: true));
   }
 
   getProductDetailById(String productId) async {
@@ -61,20 +61,17 @@ class ProductsCubit extends ControlPanelCubit {
       emit(GetAllProductsState(products: productsActions.getProducts(), isLoaded: true, message: "تم جلب جميع المنجات نجاح", isSuccess: true));
     }
     catch(ex){
-      print("EEEEEEEEEEE:::: $ex");
+      print("حدث خطأ ما عند جلب المنتجات بلفلنروة:::: $ex");
       emit(const GetAllProductsState(products: null, isLoaded: true, message: "حدث خطأ ما", isSuccess: false));
     }
   }
 
 
   addNewProduct(ProductModel newProduct) async {
-    emit(const AddEditProductState(productModel: null, isLoaded: false, isSuccess: false, message: ""));
-    String id = "${sl<Uuid>().v4()}-${DateFormat('yyyyMMddHHmmss').format(DateTime.now())}";
     try{
-    ProductModel productModel = ProductModel(id: id, name: newProduct.name, price: newProduct.price, categoryIds: newProduct.categoryIds, remainedQuantity: newProduct.remainedQuantity, boughtQuantity: newProduct.boughtQuantity, createdAt: Timestamp.now(), updatedAt: Timestamp.now());
-      productsActions.addNewProduct(productModel);
-      emit(AddEditProductState(productModel: productModel, isLoaded: true, isSuccess: true, message: "تم إضافة منتج جديد بنجاح"));
-      setNewItemIntoProducts(productModel);
+      productsActions.addNewProduct(newProduct);
+      emit(AddEditProductState(productModel: newProduct, isLoaded: true, isSuccess: true, message: "تم إضافة منتج جديد بنجاح"));
+      setNewItemIntoProducts(newProduct);
     }catch(ex){
       print("حدث خطأ ما عند إضافة منتج: $ex");
       emit(const AddEditProductState(productModel: null, isLoaded: true, isSuccess: true, message: "حدث خطأ ما"));
@@ -94,7 +91,8 @@ class ProductsCubit extends ControlPanelCubit {
     try{
       productsActions.editProduct(editedProduct);
       emit(AddEditProductState(productModel: editedProduct, isLoaded: true, isSuccess: true, message: "تم التعديل بنجاح"));
-      editNewItemIntoProducts(editedProduct);
+      await Future.delayed((const Duration(milliseconds: 200)));
+      editItemIntoProducts(editedProduct);
     }catch(ex){
       emit(const AddEditProductState(productModel: null, isLoaded: true, isSuccess: false, message: "حدث خطأ ما"));
     }

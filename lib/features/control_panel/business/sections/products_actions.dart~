@@ -163,21 +163,7 @@ class ProductsActions {
     return FirebaseFirestore.instance.collection("stores").doc(storeId).collection("products");
   }
 
-  addItemToProducts(ProductModel item) {
-    ProductModel product = ProductModel(
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        categoryIds: item.categoryIds,
-        remainedQuantity: item.remainedQuantity,
-        boughtQuantity: item.boughtQuantity,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
-        categoriesNames: categoriesActions.getCategoriesNamesFromIds(item.categoryIds)
-    );
-
-    _products.add(product);
-  }
+  addItemToProducts(ProductModel item) => _products.add(item);
 
   // editItemInProductById(String id, ProductModel item) => _products[index] = item;
 

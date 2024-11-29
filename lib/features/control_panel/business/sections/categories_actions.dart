@@ -2,29 +2,33 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:prods/features/control_panel/business/sections/products_actions.dart';
 import 'package:prods/features/control_panel/models/category_model.dart';
 
 class CategoriesActions {
-  final ProductsActions productsActions;
-
-  CategoriesActions({required this.productsActions});
 
   final User user = FirebaseAuth.instance.currentUser!;
   final CollectionReference collectionRef = FirebaseFirestore.instance.collection('users');
 
+  final List<CategoryModel> _categories = [];
+  List<CategoryModel> getCategories() => _categories;
+
   Future<List<CategoryModel>> getAllCategories() async {
     // print("One:");
+    _categories.clear();
     QuerySnapshot snapshot = await (await getCategoriesReference()).orderBy('createdAt', descending: true).get();
     // print("Three:");
-    List<CategoryModel> categories = [];
     for (var doc in snapshot.docs) {
       var myDoc = (doc.data() as Map<String, dynamic>);
       myDoc['id'] = doc.id;
-      categories.add(CategoryModel.fromDocument(myDoc));
+      _categories.add(CategoryModel.fromDocument(myDoc));
     }
     // print("This IS Cats: $categories");
-    return categories;
+    return _categories;
+  }
+
+  List<String> getCategoriesNamesFromIds(List<dynamic> categoriesIds) {
+    List<String> categoriesNames = getCategories().where((element) => categoriesIds.contains(element.id)).map((e) => e.name).toList();
+    return categoriesNames;
   }
 
   Future<CategoryModel> addNewCategory(CategoryModel newCategory) async {
@@ -71,20 +75,6 @@ class CategoriesActions {
     // print("I am here 2");
     return catNames;
   }
-
-  Future<int> countOfProductToSpecificCategory(String categoryId) async {
-    int productsCount = 0;
-    QuerySnapshot snapshot = await (await productsActions.getProductsReference()).get();
-    for(var doc in snapshot.docs){
-      var cats = ((doc.data() as Map<String, dynamic>)["categoryIds"] as List);
-      if(cats.contains(categoryId)){
-        ++productsCount;
-      }
-    }
-    return productsCount;
-  }
-
-
 
   Future<CollectionReference<Map<String, dynamic>>> getCategoriesReference() async {
     var data = (await collectionRef.doc(user.uid).get()).data() as Map<String, dynamic>;

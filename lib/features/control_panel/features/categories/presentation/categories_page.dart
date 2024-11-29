@@ -12,6 +12,7 @@ import 'package:prods/features/control_panel/models/category_model.dart';
 
 import '../../../../../core/consts/widgets_components.dart';
 import '../../../../../core/services/services_locator.dart';
+import '../../../business/sections/products_cubit.dart';
 
 class CategoriesPage extends StatefulWidget {
   const CategoriesPage({super.key});
@@ -22,19 +23,21 @@ class CategoriesPage extends StatefulWidget {
 
 class _CategoriesPageState extends State<CategoriesPage> {
 
-  late CategoriesCubit _cubit;
+  late CategoriesCubit _categoryCubit;
+  late ProductsCubit _productsCubit;
   late GlobalKey<FormState> _formKey;
   late TextEditingController _controller;
   late final ScrollController _scrollInfoHorizontalController;
 
   @override
   void initState() {
-    _cubit = CategoriesCubit.get(context);
+    _categoryCubit = CategoriesCubit.get(context);
+    _productsCubit = ProductsCubit.get(context);
     _formKey = GlobalKey<FormState>();
     _controller = _controller = TextEditingController();
     _scrollInfoHorizontalController = ScrollController();
 
-    _cubit.getAllCategories();
+    _categoryCubit.getAllCategories();
     super.initState();
   }
 
@@ -70,7 +73,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                           textColor: Colors.black,
                           text: MediaQuery.sizeOf(context).width > ScreensSizes.smallScreen ? "إضافة صنف جديد" : "",
                           onClick: () {
-                            _cubit.changeClickedOnAddNewOrEditCategory();
+                            _categoryCubit.changeClickedOnAddNewOrEditCategory();
                           }),
                     ],
                   ),
@@ -93,7 +96,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                           textColor: Colors.redAccent,
                           icon: Icons.refresh,
                           text: state.message, onClick: () {
-                            _cubit.getAllCategories();
+                            _categoryCubit.getAllCategories();
                           });
                     }
 
@@ -136,7 +139,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                                             MaterialButton(elevation: 0,
                                               color: AppColors.appGreenColor,
                                               onPressed: () {
-                                                _cubit.changeClickedOnAddNewOrEditCategory(category: data[index], index: index);
+                                                _categoryCubit.changeClickedOnAddNewOrEditCategory(category: data[index], index: index);
                                               },
                                               child: Image.asset(AppImages.edit),),
                                             const SizedBox(width: 10,),
@@ -165,12 +168,11 @@ class _CategoriesPageState extends State<CategoriesPage> {
                                                     color: AppColors.appRedColor,
                                                     onPressed: () {
                                                       showDeleteConfirmationMessage(context, Colors.white, "حذف '${data[index].name}'", "هل أنت متأكد، لن تتمكن من استرجاعه بمجرد الحذف", (){
-                                                        _cubit.deleteCategory(index, data[index]);
+                                                        _categoryCubit.deleteCategory(index, data[index]);
                                                       });
                                                     },
                                                     child: Image.asset(AppImages.delete),);
                                               },
-
                                             ),
                                           ],
                                         ),),
@@ -178,7 +180,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                                         DataCell(Align(
                                             alignment: Alignment.center,
                                             child: FutureBuilder(
-                                                future: _cubit.categoriesActions.countOfProductToSpecificCategory(data[index].id),
+                                                future: _productsCubit.productsActions.countOfProductToSpecificCategory(data[index].id),
                                                 builder: (context, snapshot) {
                                                   if (snapshot.connectionState == ConnectionState.waiting) {
                                                   return const SizedBox(

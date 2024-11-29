@@ -10,6 +10,7 @@ class ProductModel extends Equatable {
   final double boughtQuantity;
   final Timestamp createdAt;
   final Timestamp updatedAt;
+  final List<String>? categoriesNames;
 
   const ProductModel(
       {required this.id,
@@ -19,7 +20,8 @@ class ProductModel extends Equatable {
       required this.remainedQuantity,
       required this.boughtQuantity,
       required this.createdAt,
-      required this.updatedAt});
+      required this.updatedAt,
+      this.categoriesNames});
 
   factory ProductModel.fromDocument(Map<String, dynamic> document) {
     return ProductModel(
@@ -30,6 +32,7 @@ class ProductModel extends Equatable {
         remainedQuantity: double.parse(document['remainedQuantity'].toString()),
         boughtQuantity: double.parse(document['boughtQuantity'].toString()),
         createdAt: document['createdAt'],
+        categoriesNames: document['categoriesNames'],
         updatedAt: document['updatedAt']);
   }
 
@@ -41,6 +44,7 @@ class ProductModel extends Equatable {
         "boughtQuantity": boughtQuantity,
         "createdAt": createdAt,
         "updatedAt": updatedAt,
+        "categoriesNames": categoriesNames,
       };
 
   @override
@@ -52,6 +56,7 @@ class ProductModel extends Equatable {
         remainedQuantity,
         boughtQuantity,
         createdAt,
-        updatedAt
+        updatedAt,
+        categoriesNames,
       ];
 }

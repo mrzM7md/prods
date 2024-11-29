@@ -451,9 +451,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                       DataCell(
                                         Align(
                                             alignment: Alignment.center,
-                                            child: Text("${data[index].categoriesNames == null || data[index].categoriesNames!.isEmpty ? "" : data[index].categoriesNames }",
-                                                style: const TextStyle(fontWeight: FontWeight.bold),
-                                            )
+                                            child: Text("${data[index].categoriesNames == null || data[index].categoriesNames!.isEmpty ? "" : data[index].categoriesNames }")
                                         ),
                                       ),
                                       getAppDataCell(
