@@ -118,8 +118,7 @@ class AppDialogs {
                               children: [
                                 SizedBox(
                                     width: 80,
-                                    child: getAppTextField(text: "اليوم", inputType: TextInputType.number
-                                      , onChange: (value){
+                                    child: getAppTextField(text: "اليوم", inputType: TextInputType.number, onChange: (value){
                                       if (!RegExp(r'^\d*$').hasMatch(value)) {
                                         dayController.text = value.replaceAll(RegExp(r'[^0-9]'), '');
                                         dayController.selection = TextSelection.fromPosition(
